@@ -1,0 +1,242 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>NCT Doyoung Photocard List</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <style>
+      body, html, #root {
+        min-height: 100vh;
+        padding-top: env(safe-area-inset-top);
+        padding-bottom: env(safe-area-inset-bottom);
+        padding-left: env(safe-area-inset-left);
+        padding-right: env(safe-area-inset-right);
+      }
+      button {
+        min-height: 2.5rem;
+        min-width: 6rem;
+      }
+      img {
+        max-width: 100%;
+        display: block;
+      }
+    </style>
+  </head>
+  <body class="bg-gray-50 text-gray-900">
+    <div id="root" class="max-w-screen-xl mx-auto px-4 sm:px-8 py-6 sm:py-10"></div>
+
+    <script type="text/babel">
+      const photocardData = [
+        {
+          category: "Album",
+          items: [
+            { name: "Cherry Bomb", image: "https://i.imgur.com/ify8SjL.jpeg" },
+            { name: "empathy-dream", image: "https://i.imgur.com/UaiPzXw.jpeg" },
+            { name: "empathy-Reality", image: "https://i.imgur.com/f1J7jNC.jpeg" },
+            { name: "Chain (JP)", image: "https://i.imgur.com/5z2b1Dz.jpeg" },
+            { name: "Regular", image: "https://i.imgur.com/tJOTgHx.jpeg" },
+            { name: "Irregular", image: "https://i.imgur.com/dEqwfcO.jpeg" },
+            { name: "Regulate", image: "https://i.imgur.com/4bhd79j.jpeg" },
+            { name: "Awaken (JP)", image: "https://i.imgur.com/zuHCv51.jpeg" },
+            { name: "Super Human", image: "https://i.imgur.com/hZdvp1R.jpeg" },
+            { name: "Super Human kino", image: "https://i.imgur.com/Jy68oLt.jpeg" },
+            { name: "Neocity The Origin Live Album", image: "https://i.imgur.com/0JHBXkf.jpeg" },
+            { name: "NeoZone N", image: "https://i.imgur.com/iZIeOSb.jpeg" },
+            { name: "NeoZone C", image: "https://i.imgur.com/ednXMV8.jpeg" },
+            { name: "NeoZone T", image: "https://i.imgur.com/gNV8ROu.jpeg" },
+            { name: "Punch 1st Player", image: "https://i.imgur.com/Uijnu5J.jpeg" },
+            { name: "Punch 2nd Player", image: "https://i.imgur.com/VpSHA5H.jpeg" },
+            { name: "Punch kit 1st Player", image: "https://i.imgur.com/3RFcZWc.jpeg" },
+            { name: "Punch kit 2nd Player", image: "https://i.imgur.com/j7XhQHM.jpeg" },
+            { name: "RESONANCE Pt_1 The Past ver", image: "https://i.imgur.com/lPDdVg9.jpeg" },
+            { name: "RESONANCE Pt_1 The Future ver", image: "https://i.imgur.com/JQcnpw3.jpeg" },
+            { name: "RESONANCE Pt_1 Yearbook card", image: "https://i.imgur.com/upchmQE.jpeg" },
+            { name: "RESONANCE Pt_1 Yearbook card SPECIAL", image: "https://i.imgur.com/do1Nxeg.jpeg" },
+            { name: "RESONANCE Pt_1 KIT The Past ", image: "https://i.imgur.com/NgAAgxy.jpeg" },
+            { name: "RESONANCE Pt_1 KIT The Future ", image: "https://i.imgur.com/c9uQHiW.jpeg" },
+            { name: "RESONANCE Pt_2 Departure ver ", image: "https://i.imgur.com/aEALrL8.jpeg" },
+            { name: "RESONANCE Pt_2 Departure ID CARD ", image: "https://i.imgur.com/mcEy0PL.jpeg" },
+            { name: "RESONANCE Pt_2 Arrival ver ", image: "https://i.imgur.com/iup8xHr.jpeg" },
+            { name: "RESONANCE Pt_2 Arrival access ", image: "https://i.imgur.com/AmWpO83.jpeg" },
+            { name: "RESONANCE Pt_2 KIT Departure  ", image: "https://i.imgur.com/HM4A8S5.jpeg" },
+            { name: "RESONANCE Pt_2 KIT Arrival  ", image: "https://i.imgur.com/21Ji6qd.jpeg" },
+            { name: "LoveHolic A  ", image: "https://i.imgur.com/oL6VVcD.jpeg" },
+            { name: "LoveHolic B1", image: "https://i.imgur.com/M8qKmdb.jpeg" },
+            { name: "LoveHolic B2", image: "https://i.imgur.com/Ui9LCtj.jpeg" },
+            { name: "LoveHolic C", image: "https://i.imgur.com/udp6Tsn.jpeg" },
+            { name: "Rewind Blossom", image: "https://i.imgur.com/th8izKI.jpeg" },
+            { name: "Sticker Sticky ver", image: "https://i.imgur.com/QvQiQY9.jpeg" },
+            { name: "Sticker Sticker ver", image: "https://i.imgur.com/AYxR6mR.jpeg" },
+            { name: "Sticker Seoul City ver", image: "https://i.imgur.com/wBRXMlF.jpeg" },
+            { name: "Sticker Jewel Case ver", image: "https://i.imgur.com/iWk8v3R.jpeg" },
+            { name: "Sticker Jewel Case AR ver", image: "https://i.imgur.com/qsmVPm4.jpeg" },
+            { name: "Favorite Catharsis ver", image: "https://i.imgur.com/nepNfmi.jpeg" },
+            { name: "Favorite Classic ver", image: "https://i.imgur.com/GTazcbj.jpeg" },
+            { name: "Favorite KIT TRAGIC ver", image: "https://i.imgur.com/tp23mX3.jpeg" },
+            { name: "Favorite KIT POETIC ver", image: "https://i.imgur.com/VdXxWt8.jpeg" },
+            { name: "Universe Photobook ver", image: "https://i.imgur.com/jz2bUt1.jpeg" },
+            { name: "Universe Jewel ver", image: "https://i.imgur.com/66bGqqw.jpeg" },
+            { name: "Universe Jewel UNIVERSE CARD", image: "https://i.imgur.com/diGiDIG.jpeg" },
+            { name: "Universe Jewel SPECIAL UNIVERSE CARD", image: "https://i.imgur.com/mqCQF3d.jpeg" },
+            { name: "2021 Winter SMTOWN SMCU EXPRESS SMTOWN ver", image: "https://i.imgur.com/ZodEzQ3.jpeg" },
+            { name: "2021 Winter SMTOWN SMCU EXPRESS Nighttime Pass ver", image: "https://i.imgur.com/ZQECnU2.jpeg" },
+            { name: "2021 Winter SMTOWN SMCU EXPRESS Nighttime Pass card", image: "https://i.imgur.com/rJWQUSe.jpeg" },
+            { name: "2Baddies Photobook ver", image: "https://i.imgur.com/09KzRmY.jpeg" },
+            { name: "2Baddies Photobook ver2", image: "https://i.imgur.com/dZAc01E.jpeg" },
+            { name: "2Baddies Photobook (KR) ver", image: "https://i.imgur.com/9viJyTM.jpeg" },
+            { name: "2Baddies Photobook (US) ver", image: "https://i.imgur.com/kH42a2f.jpeg" },
+            { name: "2Baddies Photobook (JP) ver", image: "https://i.imgur.com/aC4CuH5.jpeg" },
+            { name: "2Baddies Digipack ver", image: "https://i.imgur.com/FZU95MM.jpeg" },
+            { name: "2Baddies Digipack (KR) ver", image: "https://i.imgur.com/6ZARwbj.jpeg" },
+            { name: "2Baddies Digipack (US) ver", image: "https://i.imgur.com/aTEeITQ.jpeg" },
+            { name: "2Baddies Digipack (JP) ver", image: "https://i.imgur.com/uaRW1Rt.jpeg" },
+            { name: "2Baddies Target ver", image: "https://i.imgur.com/3TUNI06.jpeg" },
+            { name: "2Baddies NEMO", image: "https://i.imgur.com/rhAZmJB.jpeg" },
+            { name: "2Baddies NEMO-1", image: "https://i.imgur.com/Yy4Z9Ai.jpeg" },
+            { name: "2Baddies SMC", image: "https://i.imgur.com/OvEnFUW.jpeg" },
+            { name: "2Baddies SMC-1", image: "https://i.imgur.com/z5sFyo3.jpeg" },
+            { name: "2022 SMCU PALACE PALACE VER", image: "https://i.imgur.com/IjL1uM2.jpeg" },
+            { name: "2022 SMCU PALACE Portrait VER", image: "https://i.imgur.com/f2vEwAi.jpeg" },
+            { name: "2022 SMCU PALACE GUEST NCT127 VER", image: "https://i.imgur.com/WprvAlO.jpeg" },
+            { name: "2022 SMCU PALACE membership card ver", image: "https://i.imgur.com/AxslkPu.jpeg" },
+            { name: "2022 SMCU PALACE membership card", image: "https://i.imgur.com/WOdvWNB.jpeg" },
+            { name: "Ay-Yo A", image: "https://i.imgur.com/odeAMdG.jpeg" },
+            { name: "Ay-Yo B", image: "https://i.imgur.com/wUfTJXE.jpeg" },
+            { name: "Ay-Yo Digipack", image: "https://i.imgur.com/1ALCNJs.jpeg" },
+            { name: "Ay-Yo SMini", image: "https://i.imgur.com/DmvdByy.jpeg" },
+            { name: "Perfume A", image: "https://i.imgur.com/8fzAK1Q.jpeg" },
+            { name: "Perfume B", image: "https://i.imgur.com/yuJuu9E.jpeg" },
+            { name: "Perfume C", image: "https://i.imgur.com/tmyAmc8.jpeg" },
+            { name: "Perfume BOX A", image: "https://i.imgur.com/IGIpjo5.jpeg" },
+            { name: "Perfume BOX B", image: "https://i.imgur.com/6DDDmpT.jpeg" },
+            { name: "Perfume BOX C", image: "https://i.imgur.com/ONbhQ4K.jpeg" },
+            { name: "Perfume Digipack A", image: "https://i.imgur.com/ZOxXXne.jpeg" },
+            { name: "Perfume Digipack B", image: "https://i.imgur.com/gm0mfnz.jpeg" },
+            { name: "Perfume Digipack C", image: "https://i.imgur.com/GbcckSc.jpeg" },
+            { name: "Perfume SMini", image: "https://i.imgur.com/P9JmWdh.jpeg" },
+            { name: "Golden Age Archiving ver", image: "https://i.imgur.com/9nWP2LB.jpeg" },
+            { name: "Golden Age Archiving ver yearbook card", image: "https://i.imgur.com/8IsMVNW.jpeg" },
+            { name: "Golden Age Archiving ver special yearbook card", image: "https://i.imgur.com/DRzzwti.jpeg" },
+            { name: "Golden Age Collecting ver", image: "https://i.imgur.com/6sBzMXm.jpeg" },
+            { name: "Golden Age Collecting transfer card ver", image: "https://i.imgur.com/Q5sDwnZ.jpeg" },
+            { name: "Golden Age Archiving (JP) A ver", image: "https://i.imgur.com/vn5W2h2.jpeg" },
+            { name: "Golden Age Archiving (JP) B ver", image: "https://i.imgur.com/tiZ7wVq.jpeg" },
+          ],
+        },
+      ];
+
+      function App() {
+        const category = photocardData[0];
+        const allUrls = category.items.map((item) => item.image);
+
+        const getSelectedFromUrl = () => {
+          const params = new URLSearchParams(window.location.search);
+          const encoded = params.get("s");
+          if (!encoded) return null;
+          try {
+            return new Set(JSON.parse(atob(encoded)));
+          } catch {
+            return null;
+          }
+        };
+
+        const [selected, setSelected] = React.useState(() => {
+          return getSelectedFromUrl() ||
+            new Set(JSON.parse(localStorage.getItem("doyoung_photocards") || "[]"));
+        });
+
+        React.useEffect(() => {
+          localStorage.setItem("doyoung_photocards", JSON.stringify([...selected]));
+        }, [selected]);
+
+        const toggleCard = (url) => {
+          setSelected((prev) => {
+            const updated = new Set(prev);
+            if (updated.has(url)) updated.delete(url);
+            else updated.add(url);
+            return updated;
+          });
+        };
+
+        const toggleAll = () => {
+          const allSelected = allUrls.every((url) => selected.has(url));
+          setSelected(new Set(allSelected ? [] : allUrls));
+        };
+
+        const copyShareLink = () => {
+          const encoded = btoa(JSON.stringify([...selected]));
+          const url = `${window.location.origin}${window.location.pathname}?s=${encoded}`;
+          navigator.clipboard.writeText(url);
+          alert("Shareable link copied to clipboard!");
+        };
+
+        const owned = category.items.filter((item) => selected.has(item.image)).length;
+
+        return (
+          <div>
+            <h1 className="text-3xl font-bold mb-4">NCT Doyoung Photocard List</h1>
+            <p className="mb-4 text-lg text-gray-700">
+              Collected: {owned} / Total: {allUrls.length}
+            </p>
+
+            <div className="mb-6 flex gap-4 flex-wrap">
+              <button
+                onClick={toggleAll}
+                className="text-blue-600 hover:underline px-4 py-2 rounded-md border border-blue-600 transition"
+              >
+                {selected.size === allUrls.length ? "Unselect All" : "Select All"}
+              </button>
+              <button
+                onClick={copyShareLink}
+                className="text-green-600 hover:underline px-4 py-2 rounded-md border border-green-600 transition"
+              >
+                Copy Share Link
+              </button>
+            </div>
+
+            <div className="grid grid-cols-2 md:grid-cols-6 gap-4">
+              {category.items.map((item, i) => (
+                <div
+                  key={i}
+                  className="border rounded-xl overflow-hidden cursor-pointer relative transition-shadow hover:shadow-lg"
+                  onClick={() => toggleCard(item.image)}
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') toggleCard(item.image);
+                  }}
+                >
+                  <img
+                    src={item.image}
+                    alt={item.name}
+                    loading="lazy"
+                    className={`w-full h-auto transition-all duration-300 ${
+                      selected.has(item.image) ? "grayscale opacity-50" : ""
+                    }`}
+                    onError={(e) => (e.currentTarget.src = "fallback.png")}
+                  />
+                  {selected.has(item.image) && (
+                    <div className="absolute top-2 right-2 text-white bg-black/70 rounded-full px-2 py-1 text-xs select-none">
+                      ?
+                    </div>
+                  )}
+                  <div className="p-3 bg-white text-sm font-medium text-center break-words whitespace-normal">
+                     {item.name}
+                  </div>
+
+                </div>
+              ))}
+            </div>
+          </div>
+        );
+      }
+
+      ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+    </script>
+  </body>
+</html>
