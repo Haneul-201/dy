@@ -24,6 +24,11 @@
       img {
         max-width: 100%;
         display: block;
+        transition: filter 0.3s ease, opacity 0.3s ease;
+      }
+      .selected img {
+        filter: grayscale(100%);
+        opacity: 0.5;
       }
     </style>
   </head>
@@ -100,13 +105,6 @@
             { name: "2Baddies NEMO-1", image: "https://i.imgur.com/Yy4Z9Ai.jpeg" },
             { name: "2Baddies SMC", image: "https://i.imgur.com/OvEnFUW.jpeg" },
             { name: "2Baddies SMC-1", image: "https://i.imgur.com/z5sFyo3.jpeg" },
-            { name: "2Baddies KEYRING", image: "https://i.imgur.com/DQxRwqW.jpeg" },
-            { name: "2Baddies KEYRING-1", image: "https://i.imgur.com/ATXsEJa.jpeg" },
-            { name: "2Baddies KEYRING-2", image: "https://i.imgur.com/3uTSTFo.jpeg" },
-            { name: "2Baddies POSTER", image: "https://i.imgur.com/0c7G6Kd.jpeg" },
-            { name: "2Baddies POSTER-1", image: "https://i.imgur.com/wJqUQZL.jpeg" },
-            { name: "2Baddies POSTER-2", image: "https://i.imgur.com/FfXW2w1.jpeg" },
-            { name: "2Baddies POSTER-3", image: "https://i.imgur.com/m0gC8B4.jpeg" }
           ]
         },
         {
@@ -158,11 +156,11 @@
 
       function App() {
         const [searchTerm, setSearchTerm] = React.useState("");
-        const [checkedItems, setCheckedItems] = React.useState({});
+        const [selectedItems, setSelectedItems] = React.useState(new Set());
         const [selectedCategory, setSelectedCategory] = React.useState("All");
         const [copySuccess, setCopySuccess] = React.useState(false);
 
-        // Flatten all items into one list for search/filtering
+        // Flatten all items for filtering/searching
         const allItems = photocardData.flatMap(group =>
           group.items.map(item => ({
             ...item,
@@ -170,53 +168,56 @@
           }))
         );
 
-        // Categories including "All"
         const categories = ["All", ...photocardData.map(group => group.category)];
 
-        // Filtered items based on category and search
+        // Filter items by category and search term
         const filteredItems = allItems.filter(item => {
           const matchCategory = selectedCategory === "All" || item.category === selectedCategory;
           const matchSearch = item.name.toLowerCase().includes(searchTerm.toLowerCase());
           return matchCategory && matchSearch;
         });
 
-        // Toggle individual checkbox
-        function toggleCheck(name) {
-          setCheckedItems(prev => ({
-            ...prev,
-            [name]: !prev[name],
-          }));
+        // Toggle selection by name (Set for easy add/remove)
+        function toggleSelect(name) {
+          setSelectedItems(prev => {
+            const newSet = new Set(prev);
+            if (newSet.has(name)) {
+              newSet.delete(name);
+            } else {
+              newSet.add(name);
+            }
+            return newSet;
+          });
         }
 
-        // Toggle all filtered items
-        function toggleCheckAll() {
-          const allChecked = filteredItems.every(item => checkedItems[item.name]);
-          if (allChecked) {
-            // Uncheck all
-            const newChecked = { ...checkedItems };
-            filteredItems.forEach(item => {
-              delete newChecked[item.name];
+        // Select or deselect all filtered items
+        function toggleSelectAll() {
+          const allSelected = filteredItems.every(item => selectedItems.has(item.name));
+          if (allSelected) {
+            // Deselect all
+            setSelectedItems(prev => {
+              const newSet = new Set(prev);
+              filteredItems.forEach(item => newSet.delete(item.name));
+              return newSet;
             });
-            setCheckedItems(newChecked);
           } else {
-            // Check all
-            const newChecked = { ...checkedItems };
-            filteredItems.forEach(item => {
-              newChecked[item.name] = true;
+            // Select all
+            setSelectedItems(prev => {
+              const newSet = new Set(prev);
+              filteredItems.forEach(item => newSet.add(item.name));
+              return newSet;
             });
-            setCheckedItems(newChecked);
           }
         }
 
-        // Copy selected items to clipboard as markdown list with images
+        // Copy selected items as markdown
         function copySelected() {
-          const selectedItems = allItems.filter(item => checkedItems[item.name]);
-          if (selectedItems.length === 0) {
+          if (selectedItems.size === 0) {
             alert("Please select at least one photocard.");
             return;
           }
-
-          const mdList = selectedItems
+          const selectedArray = allItems.filter(item => selectedItems.has(item.name));
+          const mdList = selectedArray
             .map(item => `- ${item.name}\n  ![${item.name}](${item.image})`)
             .join("\n\n");
 
@@ -256,9 +257,9 @@
               />
               <button
                 className="bg-green-600 text-white px-4 py-2 rounded"
-                onClick={toggleCheckAll}
+                onClick={toggleSelectAll}
               >
-                {filteredItems.every(item => checkedItems[item.name])
+                {filteredItems.length > 0 && filteredItems.every(item => selectedItems.has(item.name))
                   ? "Deselect All"
                   : "Select All"}
               </button>
@@ -272,25 +273,23 @@
 
             {copySuccess && (
               <div className="mb-4 text-green-700 font-semibold">
-                Copy successful! Paste the shared link or markdown anywhere.
+                Copy successful! Paste the markdown anywhere.
               </div>
             )}
 
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
               {filteredItems.map(item => (
-                <label
+                <div
                   key={item.name}
-                  className="cursor-pointer border border-gray-300 rounded p-2 flex flex-col items-center hover:shadow"
+                  className={`cursor-pointer border border-gray-300 rounded p-2 flex flex-col items-center hover:shadow ${
+                    selectedItems.has(item.name) ? "selected" : ""
+                  }`}
+                  onClick={() => toggleSelect(item.name)}
+                  title={item.name}
                 >
-                  <input
-                    type="checkbox"
-                    checked={!!checkedItems[item.name]}
-                    onChange={() => toggleCheck(item.name)}
-                    className="mb-2"
-                  />
                   <img src={item.image} alt={item.name} className="rounded" />
                   <div className="mt-2 text-center text-sm">{item.name}</div>
-                </label>
+                </div>
               ))}
             </div>
           </div>
