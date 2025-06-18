@@ -104,29 +104,19 @@
             { name: "2Baddies NEMO", image: "https://i.imgur.com/rhAZmJB.jpeg" },
             { name: "2Baddies NEMO-1", image: "https://i.imgur.com/Yy4Z9Ai.jpeg" },
             { name: "2Baddies SMC", image: "https://i.imgur.com/OvEnFUW.jpeg" },
-            { name: "2022 SMCU PALACE PALACE VER", image: "https://i.imgur.com/IjL1uM2.jpeg" },
-            { name: "2022 SMCU PALACE Portrait VER", image: "https://i.imgur.com/f2vEwAi.jpeg" },
-            { name: "2022 SMCU PALACE GUEST NCT127 VER", image: "https://i.imgur.com/WprvAlO.jpeg" },
-            { name: "2022 SMCU PALACE membership card ver", image: "https://i.imgur.com/AxslkPu.jpeg" },
-            { name: "2022 SMCU PALACE membership card", image: "https://i.imgur.com/WOdvWNB.jpeg" },
-            { name: "Ay-Yo A", image: "https://i.imgur.com/odeAMdG.jpeg" },
-            { name: "Ay-Yo B", image: "https://i.imgur.com/wUfTJXE.jpeg" },
-            { name: "Ay-Yo Digipack", image: "https://i.imgur.com/1ALCNJs.jpeg" },
-            { name: "Ay-Yo SMini", image: "https://i.imgur.com/DmvdByy.jpeg" },
-            { name: "Perfume A", image: "https://i.imgur.com/8fzAK1Q.jpeg" },
-            { name: "Perfume B", image: "https://i.imgur.com/yuJuu9E.jpeg" },
-            { name: "Perfume C", image: "https://i.imgur.com/tmyAmc8.jpeg" },
-            { name: "Perfume BOX A", image: "https://i.imgur.com/IGIpjo5.jpeg" },
-            { name: "Perfume BOX B, image: "https://i.imgur.com/6DDDmpT.jpeg" },
-            { name: "Perfume BOX C", image: "https://i.imgur.com/ONbhQ4K.jpeg" },
-            { name: "Perfume Digipack A", image: "https://i.imgur.com/ZOxXXne.jpeg" },
-            { name: "Perfume Digipack B", image: "https://i.imgur.com/gm0mfnz.jpeg" },
-            { name: "Perfume Digipack C", image: "https://i.imgur.com/GbcckSc.jpeg" },
-            { name: "Perfume SMini", image: "https://i.imgur.com/P9JmWdh.jpeg" },
+            { name: "2Baddies SMC-1", image: "https://i.imgur.com/z5sFyo3.jpeg" },
           ]
         },
         {
           category: "Pre-order benefit",
+          items: [
+            { name: "Punch Pre-order Photocard", image: "https://i.imgur.com/46a6ZRh.jpeg" },
+            { name: "Punch Pre-order Sticker", image: "https://i.imgur.com/IEYX7lL.jpeg" },
+            { name: "RESONANCE Pt_1 Pre-order Photocard", image: "https://i.imgur.com/zysh6PC.jpeg" }
+          ]
+        },
+        {
+          category: "Album Goods",
           items: [
             { name: "RESONANCE Pt_1 3D Lenticular Card", image: "https://i.imgur.com/4bRsm66.jpeg" }
           ]
@@ -200,22 +190,24 @@
           });
         }
 
-        // Select all filtered items
-        function selectAll() {
-          setSelectedItems(prev => {
-            const newSet = new Set(prev);
-            filteredItems.forEach(item => newSet.add(item.name));
-            return newSet;
-          });
-        }
-
-        // Deselect all filtered items
-        function deselectAll() {
-          setSelectedItems(prev => {
-            const newSet = new Set(prev);
-            filteredItems.forEach(item => newSet.delete(item.name));
-            return newSet;
-          });
+        // Select or deselect all filtered items
+        function toggleSelectAll() {
+          const allSelected = filteredItems.every(item => selectedItems.has(item.name));
+          if (allSelected) {
+            // Deselect all
+            setSelectedItems(prev => {
+              const newSet = new Set(prev);
+              filteredItems.forEach(item => newSet.delete(item.name));
+              return newSet;
+            });
+          } else {
+            // Select all
+            setSelectedItems(prev => {
+              const newSet = new Set(prev);
+              filteredItems.forEach(item => newSet.add(item.name));
+              return newSet;
+            });
+          }
         }
 
         // Copy selected items as markdown
@@ -255,7 +247,7 @@
               ))}
             </div>
 
-            <div className="mb-4 flex gap-3 flex-wrap items-center">
+            <div className="mb-4 flex gap-3 flex-wrap">
               <input
                 type="text"
                 placeholder="Search photocard..."
@@ -263,31 +255,20 @@
                 value={searchTerm}
                 onChange={e => setSearchTerm(e.target.value)}
               />
-
               <button
                 className="bg-green-600 text-white px-4 py-2 rounded"
-                onClick={selectAll}
+                onClick={toggleSelectAll}
               >
-                Select All
+                {filteredItems.length > 0 && filteredItems.every(item => selectedItems.has(item.name))
+                  ? "Deselect All"
+                  : "Select All"}
               </button>
-
-              <button
-                className="bg-red-600 text-white px-4 py-2 rounded"
-                onClick={deselectAll}
-              >
-                Deselect All
-              </button>
-
               <button
                 className="bg-blue-600 text-white px-4 py-2 rounded"
                 onClick={copySelected}
               >
                 Copy Selected
               </button>
-            </div>
-
-            <div className="mb-4 font-semibold text-gray-700">
-              Total Cards: {filteredItems.length} | Selected: {selectedItems.size}
             </div>
 
             {copySuccess && (
