@@ -110,14 +110,6 @@
         {
           category: "Pre-order benefit",
           items: [
-            { name: "Punch Pre-order Photocard", image: "https://i.imgur.com/46a6ZRh.jpeg" },
-            { name: "Punch Pre-order Sticker", image: "https://i.imgur.com/IEYX7lL.jpeg" },
-            { name: "RESONANCE Pt_1 Pre-order Photocard", image: "https://i.imgur.com/zysh6PC.jpeg" }
-          ]
-        },
-        {
-          category: "Album Goods",
-          items: [
             { name: "RESONANCE Pt_1 3D Lenticular Card", image: "https://i.imgur.com/4bRsm66.jpeg" }
           ]
         },
@@ -190,24 +182,22 @@
           });
         }
 
-        // Select or deselect all filtered items
-        function toggleSelectAll() {
-          const allSelected = filteredItems.every(item => selectedItems.has(item.name));
-          if (allSelected) {
-            // Deselect all
-            setSelectedItems(prev => {
-              const newSet = new Set(prev);
-              filteredItems.forEach(item => newSet.delete(item.name));
-              return newSet;
-            });
-          } else {
-            // Select all
-            setSelectedItems(prev => {
-              const newSet = new Set(prev);
-              filteredItems.forEach(item => newSet.add(item.name));
-              return newSet;
-            });
-          }
+        // Select all filtered items
+        function selectAll() {
+          setSelectedItems(prev => {
+            const newSet = new Set(prev);
+            filteredItems.forEach(item => newSet.add(item.name));
+            return newSet;
+          });
+        }
+
+        // Deselect all filtered items
+        function deselectAll() {
+          setSelectedItems(prev => {
+            const newSet = new Set(prev);
+            filteredItems.forEach(item => newSet.delete(item.name));
+            return newSet;
+          });
         }
 
         // Copy selected items as markdown
@@ -247,7 +237,7 @@
               ))}
             </div>
 
-            <div className="mb-4 flex gap-3 flex-wrap">
+            <div className="mb-4 flex gap-3 flex-wrap items-center">
               <input
                 type="text"
                 placeholder="Search photocard..."
@@ -255,20 +245,31 @@
                 value={searchTerm}
                 onChange={e => setSearchTerm(e.target.value)}
               />
+
               <button
                 className="bg-green-600 text-white px-4 py-2 rounded"
-                onClick={toggleSelectAll}
+                onClick={selectAll}
               >
-                {filteredItems.length > 0 && filteredItems.every(item => selectedItems.has(item.name))
-                  ? "Deselect All"
-                  : "Select All"}
+                Select All
               </button>
+
+              <button
+                className="bg-red-600 text-white px-4 py-2 rounded"
+                onClick={deselectAll}
+              >
+                Deselect All
+              </button>
+
               <button
                 className="bg-blue-600 text-white px-4 py-2 rounded"
                 onClick={copySelected}
               >
                 Copy Selected
               </button>
+            </div>
+
+            <div className="mb-4 font-semibold text-gray-700">
+              Total Cards: {filteredItems.length} | Selected: {selectedItems.size}
             </div>
 
             {copySuccess && (
