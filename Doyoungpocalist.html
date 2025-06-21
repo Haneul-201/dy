@@ -332,26 +332,21 @@
           }))
         );
 
-        const categories = ["All", ...photocardData.map(group => group.category.toLowerCase())];
+        const categories = ["All", ...photocardData.map(group => group.category)];
 
-        // Filter items by category and search term
+        const [selectedCategory, setSelectedCategory] = React.useState("All");
+        const [searchTerm, setSearchTerm] = React.useState("");
+
         const filteredItems = allItems.filter(item => {
-          const matchCategory = selectedCategory === "All" || item.category === selectedCategory;
-          const matchSearch = item.name.toLowerCase().includes(searchTerm.toLowerCase());
-          return matchCategory && matchSearch;
-        });
+          const categoryMatch =
+            selectedCategory.toLowerCase() === "all" ||
+            item.category.toLowerCase() === selectedCategory.toLowerCase();
 
-        // Toggle selection by name (Set for easy add/remove)
-        function toggleSelect(name) {
-          setSelectedItems(prev => {
-            const newSet = new Set(prev);
-            if (newSet.has(name)) {
-              newSet.delete(name);
-            } else {
-              newSet.add(name);
-            }
-            return newSet;
-          });
+        const searchMatch = item.name.toLowerCase().includes(searchTerm.toLowerCase());
+
+        return categoryMatch && searchMatch;
+      });
+
         }
 
         // Select all filtered items
