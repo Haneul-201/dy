@@ -189,7 +189,7 @@
           ]
         },
         {
-          category: "Benefit",
+          category: "benefit",
           items: [
             { name: "REDONANCE pt_1 Yizhiyu", image: "https://i.imgur.com/X3zUxOQ.jpeg" },
             { name: "REDONANCE pt_2 MUMO", image: "https://i.imgur.com/sL3Mj7j.jpeg" },
@@ -334,19 +334,24 @@
 
         const categories = ["All", ...photocardData.map(group => group.category)];
 
-        const [selectedCategory, setSelectedCategory] = React.useState("All");
-        const [searchTerm, setSearchTerm] = React.useState("");
-
+        // Filter items by category and search term
         const filteredItems = allItems.filter(item => {
-          const categoryMatch =
-            selectedCategory.toLowerCase() === "all" ||
-            item.category.toLowerCase() === selectedCategory.toLowerCase();
+          const matchCategory = selectedCategory === "All" || item.category === selectedCategory;
+          const matchSearch = item.name.toLowerCase().includes(searchTerm.toLowerCase());
+          return matchCategory && matchSearch;
+        });
 
-        const searchMatch = item.name.toLowerCase().includes(searchTerm.toLowerCase());
-
-        return categoryMatch && searchMatch;
-      });
-
+        // Toggle selection by name (Set for easy add/remove)
+        function toggleSelect(name) {
+          setSelectedItems(prev => {
+            const newSet = new Set(prev);
+            if (newSet.has(name)) {
+              newSet.delete(name);
+            } else {
+              newSet.add(name);
+            }
+            return newSet;
+          });
         }
 
         // Select all filtered items
