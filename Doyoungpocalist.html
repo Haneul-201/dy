@@ -32,7 +32,7 @@
       }
     </style>
   </head>
-  <body style="background-color: #f7fbfc;" class="text-gray-900">
+  <body style="background-color: #d8edf3;" class="text-gray-900">
     <div id="root" class="max-w-screen-xl mx-auto px-4 sm:px-8 py-6 sm:py-10"></div>
 
     <script type="text/babel">
@@ -186,10 +186,10 @@
             { name: "Soar Imprinted Memory A ver ", image: "https://i.imgur.com/VzLw6z5.jpeg" },
             { name: "Soar Imprinted Memory B ver ", image: "https://i.imgur.com/W9upTjo.jpeg" },
             { name: "Soar Imprinted Memory C ver ", image: "https://i.imgur.com/eQPU8fJ.jpeg" },
-          ],
+          ]
         },
         {
-          category: "Pre-order benefit",
+          category: "benefit",
           items: [
             { name: "REDONANCE pt_1 Yizhiyu", image: "https://i.imgur.com/X3zUxOQ.jpeg" },
             { name: "REDONANCE pt_2 MUMO", image: "https://i.imgur.com/sL3Mj7j.jpeg" },
@@ -254,62 +254,73 @@
             { name: "2Baddies Tower Records", image: "https://i.imgur.com/7PIcy3X.jpeg" },
             { name: "2Baddies SM Global Shop Deluxe Box A", image: "https://i.imgur.com/8ZhnACk.jpeg" },
             { name: "2Baddies SM Global Shop Deluxe Box B", image: "https://i.imgur.com/6RuVMpy.jpeg" },
-          ],
+          ]
         },
         {
           category: "Album Goods",
           items: [
             { name: "Cherry Bomb Sticker pack", image: "https://i.imgur.com/q1Om17Z.jpeg" },
-          ],
+          ]
         },
         {
           category: "Goods",
           items: [
             { name: "수능(CSAT) Cheering", image: "https://i.imgur.com/pQM5eti.jpeg" },
-          ],
+          ]
         },
         {
           category: "Performance",
           items: [
             { name: "SM ROOKIES SHOW (Matte)", image: "https://i.imgur.com/dTP9abN.jpeg" },
             { name: "SM ROOKIES SHOW (Glossy)", image: "https://i.imgur.com/dTP9abN.jpeg" },
-          ],
+          ]
         },
         {
           category: "Exhibition",
           items: [
             { name: "Welcome to my city LUGGAGE STICKER", image: "https://i.imgur.com/dmtPB8J.jpeg" },
-          ],
+          ]
         },
         {
           category: "Season's Greetings",
           items: [
             { name: "2017 SEASON'S GREETINGS", image: "https://i.imgur.com/IrR6Tj4.jpeg" },
-          ],
+          ]
         },
         {
           category: "Etc",
           items: [
             { name: "Star Avenue", image: "https://i.imgur.com/l2IdDfm.jpeg" },
-          ],
-        },
+          ]
+        }
       ];
 
       function App() {
-        const [selectedCategory, setSelectedCategory] = React.useState("Album");
         const [searchTerm, setSearchTerm] = React.useState("");
         const [selectedItems, setSelectedItems] = React.useState(new Set());
+        const [selectedCategory, setSelectedCategory] = React.useState("All");
+        const [copySuccess, setCopySuccess] = React.useState(false);
 
-        const filteredItems = React.useMemo(() => {
-          return photocardData
-            .find((cat) => cat.category === selectedCategory)
-            ?.items.filter((item) =>
-              item.name.toLowerCase().includes(searchTerm.toLowerCase())
-            ) || [];
-        }, [selectedCategory, searchTerm]);
+        // Flatten all items for filtering/searching
+        const allItems = photocardData.flatMap(group =>
+          group.items.map(item => ({
+            ...item,
+            category: group.category,
+          }))
+        );
 
-        const toggleSelect = (name) => {
-          setSelectedItems((prev) => {
+        const categories = ["All", ...photocardData.map(group => group.category)];
+
+        // Filter items by category and search term
+        const filteredItems = allItems.filter(item => {
+          const matchCategory = selectedCategory === "All" || item.category === selectedCategory;
+          const matchSearch = item.name.toLowerCase().includes(searchTerm.toLowerCase());
+          return matchCategory && matchSearch;
+        });
+
+        // Toggle selection by name (Set for easy add/remove)
+        function toggleSelect(name) {
+          setSelectedItems(prev => {
             const newSet = new Set(prev);
             if (newSet.has(name)) {
               newSet.delete(name);
@@ -318,100 +329,121 @@
             }
             return newSet;
           });
-        };
+        }
 
-        const selectAll = () => {
-          setSelectedItems(new Set(filteredItems.map((item) => item.name)));
-        };
+        // Select all filtered items
+        function selectAll() {
+          setSelectedItems(prev => {
+            const newSet = new Set(prev);
+            filteredItems.forEach(item => newSet.add(item.name));
+            return newSet;
+          });
+        }
 
-        const deselectAll = () => {
-          setSelectedItems(new Set());
-        };
+        // Deselect all filtered items
+        function deselectAll() {
+          setSelectedItems(prev => {
+            const newSet = new Set(prev);
+            filteredItems.forEach(item => newSet.delete(item.name));
+            return newSet;
+          });
+        }
 
-        const copySelected = () => {
+        // Copy selected items as markdown
+        function copySelected() {
           if (selectedItems.size === 0) {
-            alert("No items selected to copy.");
+            alert("Please select at least one photocard.");
             return;
           }
-          const textToCopy = filteredItems
-            .filter((item) => selectedItems.has(item.name))
-            .map((item) => item.name)
-            .join("\n");
-          navigator.clipboard.writeText(textToCopy).then(() => {
-            alert("Copied to clipboard!");
+          const selectedArray = allItems.filter(item => selectedItems.has(item.name));
+          const mdList = selectedArray
+            .map(item => `- ${item.name}\n  ![${item.name}](${item.image})`)
+            .join("\n\n");
+
+          navigator.clipboard.writeText(mdList).then(() => {
+            setCopySuccess(true);
+            setTimeout(() => setCopySuccess(false), 2000);
           });
-        };
+        }
 
         return (
           <div>
-            <h1
-              className="text-4xl font-serif mb-6"
-              style={{ color: "#5584AC" }}
-            >
+            <h1 className="text-4xl font-bold mb-6" style={{ color: "#6a95b7" }}>
               NCT Doyoung Photocard List
             </h1>
 
-            <div className="flex flex-wrap gap-2 mb-6">
-              {photocardData.map((cat) => (
+
+            <div className="flex flex-wrap gap-2 mb-4">
+              {categories.map(cat => (
                 <button
-                  key={cat.category}
-                  onClick={() => setSelectedCategory(cat.category)}
-                  className={`px-3 py-1 rounded ${
-                    selectedCategory === cat.category
-                      ? "bg-blue-600 text-white"
-                      : "bg-gray-200"
+                  key={cat}
+                  className={`px-4 py-2 rounded border ${
+                    selectedCategory === cat
+                      ? "bg-blue-600 text-white border-blue-600"
+                      : "bg-white text-gray-700 border-gray-300"
                   }`}
+                  onClick={() => setSelectedCategory(cat)}
                 >
-                  {cat.category}
+                  {cat}
                 </button>
               ))}
             </div>
 
-            <input
-              type="text"
-              placeholder="Search"
-              className="w-full mb-6 p-2 border border-gray-300 rounded"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
+            <div className="mb-4 flex gap-3 flex-wrap items-center">
+              <input
+                type="text"
+                placeholder="Search photocard..."
+                className="border border-gray-300 rounded px-3 py-2 flex-grow min-w-[200px]"
+                value={searchTerm}
+                onChange={e => setSearchTerm(e.target.value)}
+              />
 
-            <div className="grid grid-cols-6 gap-3 mb-6 sm:grid-cols-2">
-              {filteredItems.map((item) => (
-                <div
-                  key={item.name}
-                  className={`cursor-pointer p-1 border rounded select-none ${
-                    selectedItems.has(item.name) ? "selected border-blue-600" : ""
-                  }`}
-                  onClick={() => toggleSelect(item.name)}
-                >
-                  <img src={item.image} alt={item.name} />
-                  <p className="text-sm mt-1 text-center">{item.name}</p>
-                </div>
-              ))}
-            </div>
-
-            <div className="flex gap-4 justify-center">
               <button
-                className="px-4 py-2 rounded text-white"
-                style={{ backgroundColor: "#5584AC" }}
+                className="bg-green-600 text-white px-4 py-2 rounded"
                 onClick={selectAll}
               >
                 Select All
               </button>
+
               <button
-                className="px-4 py-2 rounded text-white"
-                style={{ backgroundColor: "#8db9ce" }}
+                className="bg-red-600 text-white px-4 py-2 rounded"
                 onClick={deselectAll}
               >
                 Deselect All
               </button>
+
               <button
-                className="px-4 py-2 rounded text-white"
-                style={{ backgroundColor: "#3c6e91" }}
+                className="bg-blue-600 text-white px-4 py-2 rounded"
                 onClick={copySelected}
               >
                 Copy Selected
               </button>
+            </div>
+
+            <div className="mb-4 font-semibold text-gray-700">
+              Total Cards: {filteredItems.length} | Selected: {selectedItems.size}
+            </div>
+
+            {copySuccess && (
+              <div className="mb-4 text-green-700 font-semibold">
+                Copy successful! Paste the markdown anywhere.
+              </div>
+            )}
+
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+              {filteredItems.map(item => (
+                <div
+                  key={item.name}
+                  className={`cursor-pointer border border-gray-300 rounded p-2 flex flex-col items-center hover:shadow ${
+                    selectedItems.has(item.name) ? "selected" : ""
+                  }`}
+                  onClick={() => toggleSelect(item.name)}
+                  title={item.name}
+                >
+                  <img src={item.image} alt={item.name} className="rounded" />
+                  <div className="mt-2 text-center text-sm">{item.name}</div>
+                </div>
+              ))}
             </div>
           </div>
         );
