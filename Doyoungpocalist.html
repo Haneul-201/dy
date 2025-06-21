@@ -332,7 +332,7 @@
           }))
         );
 
-        const categories = ["All", ...photocardData.map(group => group.category)];
+        const categories = ["All", ...photocardData.map(group => group.category.toLowerCase())];
 
         // Filter items by category and search term
         const filteredItems = allItems.filter(item => {
