@@ -367,75 +367,84 @@
         }
 
                 return (
-          <div>
-            <h1
-              className="text-4xl font-serif mb-6"
-              style={{ color: "#5584AC" }}
-            >
+               <div>
+            <h1 className="text-4xl font-bold mb-6" style={{ color: "#6a95b7" }}>
               NCT Doyoung Photocard List
             </h1>
 
-            <div className="flex flex-wrap gap-2 mb-6">
-              {photocardData.map((cat) => (
+
+            <div className="flex flex-wrap gap-2 mb-4">
+              {categories.map(cat => (
                 <button
-                  key={cat.category}
-                  onClick={() => setSelectedCategory(cat.category)}
-                  className={`px-3 py-1 rounded ${
-                    selectedCategory === cat.category
-                      ? "bg-blue-600 text-white"
-                      : "bg-gray-200"
-                  }`}
+                  key={cat}
+                  className={px-4 py-2 rounded border ${
+                    selectedCategory === cat
+                      ? "bg-blue-600 text-white border-blue-600"
+                      : "bg-white text-gray-700 border-gray-300"
+                  }}
+                  onClick={() => setSelectedCategory(cat)}
                 >
-                  {cat.category}
+                  {cat}
                 </button>
               ))}
             </div>
 
-            <input
-              type="text"
-              placeholder="Search"
-              className="w-full mb-6 p-2 border border-gray-300 rounded"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
+            <div className="mb-4 flex gap-3 flex-wrap items-center">
+              <input
+                type="text"
+                placeholder="Search photocard..."
+                className="border border-gray-300 rounded px-3 py-2 flex-grow min-w-[200px]"
+                value={searchTerm}
+                onChange={e => setSearchTerm(e.target.value)}
+              />
 
-            <div className="grid grid-cols-6 gap-3 mb-6 sm:grid-cols-2">
-              {filteredItems.map((item) => (
-                <div
-                  key={item.name}
-                  className={`cursor-pointer p-1 border rounded select-none ${
-                    selectedItems.has(item.name) ? "selected border-blue-600" : ""
-                  }`}
-                  onClick={() => toggleSelect(item.name)}
-                >
-                  <img src={item.image} alt={item.name} />
-                  <p className="text-sm mt-1 text-center">{item.name}</p>
-                </div>
-              ))}
+             <button
+               className="px-4 py-2 rounded text-white"
+               style={{ backgroundColor: "#5584AC" }}
+             >
+               Select All
+             </button>
+
+             <button
+              className="px-4 py-2 rounded text-white"
+              style={{ backgroundColor: "#8db9ce" }}
+             >
+              Deselect All
+             </button>
+
+             <button
+               className="px-4 py-2 rounded text-white"
+               style={{ backgroundColor: "#3c6e91" }}
+             >
+               Copy Selected
+             </button>
+
             </div>
 
-            <div className="flex gap-4 justify-center">
-              <button
-                className="px-4 py-2 rounded text-white"
-                style={{ backgroundColor: "#5584AC" }}
-                onClick={selectAll}
-              >
-                Select All
-              </button>
-              <button
-                className="px-4 py-2 rounded text-white"
-                style={{ backgroundColor: "#8db9ce" }}
-                onClick={deselectAll}
-              >
-                Deselect All
-              </button>
-              <button
-                className="px-4 py-2 rounded text-white"
-                style={{ backgroundColor: "#3c6e91" }}
-                onClick={copySelected}
-              >
-                Copy Selected
-              </button>
+            <div className="mb-4 font-semibold text-gray-700">
+              Total Cards: {filteredItems.length} | Selected: {selectedItems.size}
+            </div>
+
+            {copySuccess && (
+              <div className="mb-4 text-green-700 font-semibold">
+                Copy successful! Paste the markdown anywhere.
+              </div>
+            )}
+
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+              {filteredItems.map(item => (
+                <div
+                  key={item.name}
+                  className={cursor-pointer border border-gray-300 rounded p-2 flex flex-col items-center hover:shadow ${
+                    selectedItems.has(item.name) ? "selected" : ""
+                  }}
+                  onClick={() => toggleSelect(item.name)}
+                  title={item.name}
+                >
+                  <img src={item.image} alt={item.name} className="rounded" />
+                  <div className="mt-2 text-center text-sm">{item.name}</div>
+                </div>
+              ))}
             </div>
           </div>
         );
