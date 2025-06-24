@@ -5,476 +5,542 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <title>NCT Doyoung Photocard List</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-
-    <style>
-      body, html, #root {
-        min-height: 100vh;
-        padding-top: env(safe-area-inset-top);
-        padding-bottom: env(safe-area-inset-bottom);
-        padding-left: env(safe-area-inset-left);
-        padding-right: env(safe-area-inset-right);
-      }
-      button {
-        min-height: 2.5rem;
-        min-width: 6rem;
-      }
-      img {
-        max-width: 100%;
-        display: block;
-        transition: filter 0.3s ease, opacity 0.3s ease;
-      }
-      .selected img {
-        filter: grayscale(100%);
-        opacity: 0.5;
-      }
-    </style>
   </head>
-  <body style="background-color: #f7fbfc;" class="text-gray-900">
-    <div id="root" class="max-w-screen-xl mx-auto px-4 sm:px-8 py-6 sm:py-10"></div>
+  <body class="bg-[#d8edf3] min-h-screen p-4">
+    <div id="app" class="max-w-6xl mx-auto">
+      <h1 class="text-4xl font-bold mb-6 text-[#5584AC] font-serif">Doyoung Photocard List</h1>
 
-    <script type="text/babel">
+      <div class="flex flex-wrap gap-2 mb-4" id="categoryButtons"></div>
+
+      <!-- 검색창 + 버튼 -->
+      <div class="flex flex-wrap gap-2 mb-4 items-center">
+        <input
+          type="text"
+          id="searchInput"
+          placeholder="Search..."
+          class="p-2 border border-gray-300 rounded grow min-w-[200px]"
+        />
+        <button id="selectAllBtn" class="px-3 py-2 bg-[#6a95b7] text-white rounded">Select All</button>
+        <button id="deselectAllBtn" class="px-3 py-2 bg-[#6a95b7] text-white rounded">Deselect All</button>
+        <button id="copySelectedBtn" class="px-3 py-2 bg-[#6a95b7] text-white rounded">Copy Selected</button>
+      </div>
+
+      <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4" id="photocardGrid"></div>
+    </div>
+
+    <script>
+      // 카테고리 목록 (All 포함)
+      const categories = [
+        "All",
+        "Album",
+        "Benefit",
+        "Album Goods",
+        "Goods",
+        "Performance",
+        "Exhibition",
+        "Season's Greetings",
+        "Etc"
+      ];
+
+      // 각 카테고리별 예시 데이터 (실제 이미지 URL과 이름으로 교체하세요)
       const photocardData = [
         {
           category: "Album",
           items: [
-            { name: "Cherry Bomb", image: "https://i.imgur.com/ify8SjL.jpeg" },
-            { name: "empathy-dream", image: "https://i.imgur.com/UaiPzXw.jpeg" },
-            { name: "empathy-Reality", image: "https://i.imgur.com/f1J7jNC.jpeg" },
-            { name: "Chain (JP)", image: "https://i.imgur.com/5z2b1Dz.jpeg" },
-            { name: "Regular", image: "https://i.imgur.com/tJOTgHx.jpeg" },
-            { name: "Irregular", image: "https://i.imgur.com/dEqwfcO.jpeg" },
-            { name: "Regulate", image: "https://i.imgur.com/4bhd79j.jpeg" },
-            { name: "Awaken (JP)", image: "https://i.imgur.com/zuHCv51.jpeg" },
-            { name: "Super Human", image: "https://i.imgur.com/hZdvp1R.jpeg" },
-            { name: "Super Human kino", image: "https://i.imgur.com/Jy68oLt.jpeg" },
-            { name: "Neocity The Origin Live Album", image: "https://i.imgur.com/0JHBXkf.jpeg" },
-            { name: "NeoZone N", image: "https://i.imgur.com/iZIeOSb.jpeg" },
-            { name: "NeoZone C", image: "https://i.imgur.com/ednXMV8.jpeg" },
-            { name: "NeoZone T", image: "https://i.imgur.com/gNV8ROu.jpeg" },
-            { name: "Punch 1st Player", image: "https://i.imgur.com/Uijnu5J.jpeg" },
-            { name: "Punch 2nd Player", image: "https://i.imgur.com/VpSHA5H.jpeg" },
-            { name: "Punch kit 1st Player", image: "https://i.imgur.com/3RFcZWc.jpeg" },
-            { name: "Punch kit 2nd Player", image: "https://i.imgur.com/j7XhQHM.jpeg" },
-            { name: "RESONANCE Pt_1 The Past ver", image: "https://i.imgur.com/lPDdVg9.jpeg" },
-            { name: "RESONANCE Pt_1 The Future ver", image: "https://i.imgur.com/JQcnpw3.jpeg" },
-            { name: "RESONANCE Pt_1 Yearbook card", image: "https://i.imgur.com/upchmQE.jpeg" },
-            { name: "RESONANCE Pt_1 Yearbook card SPECIAL", image: "https://i.imgur.com/do1Nxeg.jpeg" },
-            { name: "RESONANCE Pt_1 KIT The Past ", image: "https://i.imgur.com/NgAAgxy.jpeg" },
-            { name: "RESONANCE Pt_1 KIT The Future ", image: "https://i.imgur.com/c9uQHiW.jpeg" },
-            { name: "RESONANCE Pt_2 Departure ver ", image: "https://i.imgur.com/aEALrL8.jpeg" },
-            { name: "RESONANCE Pt_2 Departure ID CARD ", image: "https://i.imgur.com/mcEy0PL.jpeg" },
-            { name: "RESONANCE Pt_2 Arrival ver ", image: "https://i.imgur.com/iup8xHr.jpeg" },
-            { name: "RESONANCE Pt_2 Arrival access ", image: "https://i.imgur.com/AmWpO83.jpeg" },
-            { name: "RESONANCE Pt_2 KIT Departure  ", image: "https://i.imgur.com/HM4A8S5.jpeg" },
-            { name: "RESONANCE Pt_2 KIT Arrival  ", image: "https://i.imgur.com/21Ji6qd.jpeg" },
-            { name: "LoveHolic A  ", image: "https://i.imgur.com/oL6VVcD.jpeg" },
-            { name: "LoveHolic B1", image: "https://i.imgur.com/M8qKmdb.jpeg" },
-            { name: "LoveHolic B2", image: "https://i.imgur.com/Ui9LCtj.jpeg" },
-            { name: "LoveHolic C", image: "https://i.imgur.com/udp6Tsn.jpeg" },
-            { name: "Rewind Blossom", image: "https://i.imgur.com/th8izKI.jpeg" },
-            { name: "Sticker Sticky ver", image: "https://i.imgur.com/QvQiQY9.jpeg" },
-            { name: "Sticker Sticker ver", image: "https://i.imgur.com/AYxR6mR.jpeg" },
-            { name: "Sticker Seoul City ver", image: "https://i.imgur.com/wBRXMlF.jpeg" },
-            { name: "Sticker Jewel Case ver", image: "https://i.imgur.com/iWk8v3R.jpeg" },
-            { name: "Sticker Jewel Case AR ver", image: "https://i.imgur.com/qsmVPm4.jpeg" },
-            { name: "Favorite Catharsis ver", image: "https://i.imgur.com/nepNfmi.jpeg" },
-            { name: "Favorite Classic ver", image: "https://i.imgur.com/GTazcbj.jpeg" },
-            { name: "Favorite KIT TRAGIC ver", image: "https://i.imgur.com/tp23mX3.jpeg" },
-            { name: "Favorite KIT POETIC ver", image: "https://i.imgur.com/VdXxWt8.jpeg" },
-            { name: "Universe Photobook ver", image: "https://i.imgur.com/jz2bUt1.jpeg" },
-            { name: "Universe Jewel ver", image: "https://i.imgur.com/66bGqqw.jpeg" },
-            { name: "Universe Jewel UNIVERSE CARD", image: "https://i.imgur.com/diGiDIG.jpeg" },
-            { name: "Universe Jewel SPECIAL UNIVERSE CARD", image: "https://i.imgur.com/mqCQF3d.jpeg" },
-            { name: "2021 Winter SMTOWN SMCU EXPRESS SMTOWN ver", image: "https://i.imgur.com/ZodEzQ3.jpeg" },
-            { name: "2021 Winter SMTOWN SMCU EXPRESS Nighttime Pass ver", image: "https://i.imgur.com/ZQECnU2.jpeg" },
-            { name: "2021 Winter SMTOWN SMCU EXPRESS Nighttime Pass card", image: "https://i.imgur.com/rJWQUSe.jpeg" },
-            { name: "2Baddies Photobook ver", image: "https://i.imgur.com/09KzRmY.jpeg" },
-            { name: "2Baddies Photobook ver2", image: "https://i.imgur.com/dZAc01E.jpeg" },
-            { name: "2Baddies Photobook (KR) ver", image: "https://i.imgur.com/9viJyTM.jpeg" },
-            { name: "2Baddies Photobook (US) ver", image: "https://i.imgur.com/kH42a2f.jpeg" },
-            { name: "2Baddies Photobook (JP) ver", image: "https://i.imgur.com/aC4CuH5.jpeg" },
-            { name: "2Baddies Digipack ver", image: "https://i.imgur.com/FZU95MM.jpeg" },
-            { name: "2Baddies Digipack (KR) ver", image: "https://i.imgur.com/6ZARwbj.jpeg" },
-            { name: "2Baddies Digipack (US) ver", image: "https://i.imgur.com/aTEeITQ.jpeg" },
-            { name: "2Baddies Digipack (JP) ver", image: "https://i.imgur.com/uaRW1Rt.jpeg" },
-            { name: "2Baddies Target ver", image: "https://i.imgur.com/3TUNI06.jpeg" },
-            { name: "2Baddies NEMO", image: "https://i.imgur.com/rhAZmJB.jpeg" },
-            { name: "2Baddies NEMO-1", image: "https://i.imgur.com/Yy4Z9Ai.jpeg" },
-            { name: "2Baddies SMC", image: "https://i.imgur.com/OvEnFUW.jpeg" },
-            { name: "2Baddies SMC-1", image: "https://i.imgur.com/z5sFyo3.jpeg" },
-            { name: "2022 SMCU PALACE PALACE VER", image: "https://i.imgur.com/IjL1uM2.jpeg" },
-            { name: "2022 SMCU PALACE Portrait VER", image: "https://i.imgur.com/f2vEwAi.jpeg" },
-            { name: "2022 SMCU PALACE GUEST NCT127 VER", image: "https://i.imgur.com/WprvAlO.jpeg" },
-            { name: "2022 SMCU PALACE membership card ver", image: "https://i.imgur.com/AxslkPu.jpeg" },
-            { name: "2022 SMCU PALACE membership card", image: "https://i.imgur.com/WOdvWNB.jpeg" },
-            { name: "Ay-Yo A", image: "https://i.imgur.com/odeAMdG.jpeg" },
-            { name: "Ay-Yo B", image: "https://i.imgur.com/wUfTJXE.jpeg" },
-            { name: "Ay-Yo Digipack", image: "https://i.imgur.com/1ALCNJs.jpeg" },
-            { name: "Ay-Yo SMini", image: "https://i.imgur.com/DmvdByy.jpeg" },
-            { name: "Perfume A", image: "https://i.imgur.com/8fzAK1Q.jpeg" },
-            { name: "Perfume B", image: "https://i.imgur.com/yuJuu9E.jpeg" },
-            { name: "Perfume C", image: "https://i.imgur.com/tmyAmc8.jpeg" },
-            { name: "Perfume BOX A", image: "https://i.imgur.com/IGIpjo5.jpeg" },
-            { name: "Perfume BOX B", image: "https://i.imgur.com/6DDDmpT.jpeg" },
-            { name: "Perfume BOX C", image: "https://i.imgur.com/ONbhQ4K.jpeg" },
-            { name: "Perfume Digipack A", image: "https://i.imgur.com/ZOxXXne.jpeg" },
-            { name: "Perfume Digipack B", image: "https://i.imgur.com/gm0mfnz.jpeg" },
-            { name: "Perfume Digipack C", image: "https://i.imgur.com/GbcckSc.jpeg" },
-            { name: "Golden Age Archiving ver", image: "https://i.imgur.com/9nWP2LB.jpeg" },
-            { name: "Golden Age Archiving ver yearbook card", image: "https://i.imgur.com/8IsMVNW.jpeg" },
-            { name: "Golden Age Archiving ver special yearbook card", image: "https://i.imgur.com/DRzzwti.jpeg" },
-            { name: "Golden Age Collecting ver", image: "https://i.imgur.com/6sBzMXm.jpeg" },
-            { name: "Golden Age Collecting transfer card ver", image: "https://i.imgur.com/Q5sDwnZ.jpeg" },
-            { name: "Golden Age Archiving (JP) A ver", image: "https://i.imgur.com/vn5W2h2.jpeg" },
-            { name: "Golden Age Archiving (JP) B ver", image: "https://i.imgur.com/tiZ7wVq.jpeg" },
-            { name: "Golden Age D2C ver", image: "https://i.imgur.com/Yt6h4If.jpeg" },
-            { name: "Golden Age Target ver", image: "https://i.imgur.com/RlBBd5n.jpeg" },
-            { name: "FactCheck Chandelier ver", image: "https://i.imgur.com/yd2l6V5.jpeg" },
-            { name: "FactCheck Storage ver", image: "https://i.imgur.com/0BCyrds.jpeg" },
-            { name: "FactCheck QR Image card", image: "https://i.imgur.com/g8fVU43.jpeg" },
-            { name: "FactCheck QR ver", image: "https://i.imgur.com/LuYarRl.jpeg" },
-            { name: "FactCheck SMini ver", image: "https://i.imgur.com/yB17MLE.jpeg" },
-            { name: "FactCheck Exhibit ver", image: "https://i.imgur.com/DwYVrYi.jpeg" },
-            { name: "FactCheck Deluxe Box ver", image: "https://i.imgur.com/URWKavz.jpeg" },
-            { name: "FactCheck Exhibit (JP) ver", image: "https://i.imgur.com/eZimmWQ.jpeg" },
-            { name: "FactCheck Baenes&Noble _ Amazon ver", image: "https://i.imgur.com/jLoolFb.jpeg" },
-            { name: "FactCheck Walmart ver", image: "https://i.imgur.com/17UI6rX.jpeg" },
-            { name: "FactCheck D2C ver", image: "https://i.imgur.com/2Y0L2i6.jpeg" },
-            { name: "FactCheck Target ver", image: "https://i.imgur.com/r9e5GyR.jpeg" },
-            { name: "Be There For Me 127 STEREO A Ver", image: "https://i.imgur.com/unyGtmN.jpeg" },
-            { name: "Be There For Me 127 STEREO B Ver", image: "https://i.imgur.com/hiiGnDu.jpeg" },
-            { name: "Be There For Me SMini Ver", image: "https://i.imgur.com/TahcOQa.jpeg" },
-            { name: "Be There For Me House Ver", image: "https://i.imgur.com/b4euPsR.jpeg" },
-            { name: "Be There For Me House (JP) Ver", image: "https://i.imgur.com/QnvRbgq.jpeg" },
-            { name: "Be There For Me Walmart Ver", image: "https://i.imgur.com/Fp2mIWn.jpeg" },
-            { name: "Be There For Me Target Ver", image: "https://i.imgur.com/unoFTVd.jpeg" },
-            { name: "NCT ZONE OST Tin case selfie", image: "https://i.imgur.com/8nbZi2X.jpeg" },
-            { name: "NCT ZONE OST Tin case agent", image: "https://i.imgur.com/ndrP9C4.jpeg" },
-            { name: "NCT ZONE OST Baseball Player", image: "https://i.imgur.com/MdPoQVz.jpeg" },
-            { name: "YOUTH Foam A ver", image: "https://i.imgur.com/6Z6usYO.jpeg" },
-            { name: "YOUTH Foam B ver", image: "https://i.imgur.com/R9Mo7rS.jpeg" },
-            { name: "YOUTH Foam C ver", image: "https://i.imgur.com/GBnEJh6.jpeg" },
-            { name: "YOUTH Early Spring A ver", image: "https://i.imgur.com/LT904tH.jpeg" },
-            { name: "YOUTH Early Spring B ver", image: "https://i.imgur.com/VnP5FwJ.jpeg" },
-            { name: "YOUTH Early Spring C ver", image: "https://i.imgur.com/wLUhJ65.jpeg" },
-            { name: "YOUTH Digipack A ver", image: "https://i.imgur.com/N4bb9Q2.jpeg" },
-            { name: "YOUTH Digipack B ver", image: "https://i.imgur.com/GNEhAfc.jpeg" },
-            { name: "YOUTH Digipack C ver", image: "https://i.imgur.com/h3tKHOk.jpeg" },
-            { name: "WALK Walk ver", image: "https://i.imgur.com/44bfDBk.jpeg" },
-            { name: "WALK Podcast ver", image: "https://i.imgur.com/G6gE3uU.jpeg" },
-            { name: "WALK Poster ver", image: "https://i.imgur.com/VGy50h8.jpeg" },
-            { name: "WALK Poster id card ver", image: "https://i.imgur.com/aVZ2gKM.jpeg" },
-            { name: "WALK Walk Crew Character Card ver", image: "https://i.imgur.com/VHz49Gc.jpeg" },
-            { name: "WALK Walk Crew Character Card", image: "https://i.imgur.com/zBCy7MO.jpeg" },
-            { name: "WALK SMini ver", image: "https://i.imgur.com/H2gogEe.jpeg" },
-            { name: "WALK JAPAN EXCLUSIVE ver", image: "https://i.imgur.com/GawNb5z.jpeg" },
-            { name: "WALK Target ver", image: "https://i.imgur.com/xzCAIyR.jpeg" },
-            { name: "WALK Walmart ver", image: "https://i.imgur.com/AJ9CVi7.jpeg" },
-            { name: "WALK SM global shop ver", image: "https://i.imgur.com/6vRg75t.jpeg" },
-            { name: "2025 SMTOWN THE CULTURE THE FUTURE THE FUTURE ver", image: "https://i.imgur.com/h4IIDU7.jpeg" },
-            { name: "2025 SMTOWN THE CULTURE THE FUTURE FAMILY ver", image: "https://i.imgur.com/SVpEDxE.jpeg" },
-            { name: "2025 SMTOWN THE CULTURE THE FUTURE TIME CAPSULE ver", image: "https://i.imgur.com/celJeYK.jpeg" },
-            { name: "Soar Crack of Dawn A ver ", image: "https://i.imgur.com/MD8Gpjb.jpeg" },
-            { name: "Soar Crack of Dawn B ver ", image: "https://i.imgur.com/kVvMWY3.jpeg" },
-            { name: "Soar Crack of Dawn C ver ", image: "https://i.imgur.com/rmy7V8m.jpeg" },
-            { name: "Soar Be My Light A ver ", image: "https://i.imgur.com/Mp1ebhm.jpeg" },
-            { name: "Soar Be My Light B ver ", image: "https://i.imgur.com/HBFedUy.jpeg" },
-            { name: "Soar Be My Light C ver ", image: "https://i.imgur.com/KDvJOL4.jpeg" },
-            { name: "Soar Imprinted Memory A ver ", image: "https://i.imgur.com/VzLw6z5.jpeg" },
-            { name: "Soar Imprinted Memory B ver ", image: "https://i.imgur.com/W9upTjo.jpeg" },
-            { name: "Soar Imprinted Memory C ver ", image: "https://i.imgur.com/eQPU8fJ.jpeg" },
+            { id: 1, name: "Cherry Bomb", image: "https://i.imgur.com/ify8SjL.jpeg" },
+            { id: 2, name: "empathy-dream", image: "https://i.imgur.com/UaiPzXw.jpeg" },
+            { id: 3, name: "empathy-Reality", image: "https://i.imgur.com/f1J7jNC.jpeg" },
+            { id: 4, name: "Chain (JP)", image: "https://i.imgur.com/5z2b1Dz.jpeg" },
+            { id: 5, name: "Regular", image: "https://i.imgur.com/tJOTgHx.jpeg" },
+            { id: 6, name: "Irregular", image: "https://i.imgur.com/dEqwfcO.jpeg" },
+            { id: 7, name: "Regulate", image: "https://i.imgur.com/4bhd79j.jpeg" },
+            { id: 8, name: "Awaken (JP)", image: "https://i.imgur.com/zuHCv51.jpeg" },
+            { id: 9, name: "Super Human", image: "https://i.imgur.com/hZdvp1R.jpeg" },
+            { id: 10, name: "Super Human kino", image: "https://i.imgur.com/Jy68oLt.jpeg" },
+            { id: 11, name: "Neocity The Origin Live Album", image: "https://i.imgur.com/0JHBXkf.jpeg" },
+            { id: 12, name: "NeoZone N", image: "https://i.imgur.com/iZIeOSb.jpeg" },
+            { id: 13, name: "NeoZone C", image: "https://i.imgur.com/ednXMV8.jpeg" },
+            { id: 14, name: "NeoZone T", image: "https://i.imgur.com/gNV8ROu.jpeg" },
+            { id: 15, name: "Punch 1st Player", image: "https://i.imgur.com/Uijnu5J.jpeg" },
+            { id: 16, name: "Punch 2nd Player", image: "https://i.imgur.com/VpSHA5H.jpeg" },
+            { id: 17, name: "Punch kit 1st Player", image: "https://i.imgur.com/3RFcZWc.jpeg" },
+            { id: 18, name: "Punch kit 2nd Player", image: "https://i.imgur.com/j7XhQHM.jpeg" },
+            { id: 19, name: "RESONANCE Pt_1 The Past ver", image: "https://i.imgur.com/lPDdVg9.jpeg" },
+            { id: 20, name: "RESONANCE Pt_1 The Future ver", image: "https://i.imgur.com/JQcnpw3.jpeg" },
+            { id: 21, name: "RESONANCE Pt_1 Yearbook card", image: "https://i.imgur.com/upchmQE.jpeg" },
+            { id: 22, name: "RESONANCE Pt_1 Yearbook card SPECIAL", image: "https://i.imgur.com/do1Nxeg.jpeg" },
+            { id: 23, name: "RESONANCE Pt_1 KIT The Past ", image: "https://i.imgur.com/NgAAgxy.jpeg" },
+            { id: 24, name: "RESONANCE Pt_1 KIT The Future ", image: "https://i.imgur.com/c9uQHiW.jpeg" },
+            { id: 25, name: "RESONANCE Pt_2 Departure ver ", image: "https://i.imgur.com/aEALrL8.jpeg" },
+            { id: 26, name: "RESONANCE Pt_2 Departure ID CARD ", image: "https://i.imgur.com/mcEy0PL.jpeg" },
+            { id: 27, name: "RESONANCE Pt_2 Arrival ver ", image: "https://i.imgur.com/iup8xHr.jpeg" },
+            { id: 28, name: "RESONANCE Pt_2 Arrival access ", image: "https://i.imgur.com/AmWpO83.jpeg" },
+            { id: 29, name: "RESONANCE Pt_2 KIT Departure  ", image: "https://i.imgur.com/HM4A8S5.jpeg" },
+            { id: 30, name: "RESONANCE Pt_2 KIT Arrival  ", image: "https://i.imgur.com/21Ji6qd.jpeg" },
+            { id: 31, name: "LoveHolic A  ", image: "https://i.imgur.com/oL6VVcD.jpeg" },
+            { id: 32, name: "LoveHolic B1", image: "https://i.imgur.com/M8qKmdb.jpeg" },
+            { id: 33, name: "LoveHolic B2", image: "https://i.imgur.com/Ui9LCtj.jpeg" },
+            { id: 34, name: "LoveHolic C", image: "https://i.imgur.com/udp6Tsn.jpeg" },
+            { id: 35, name: "Rewind Blossom", image: "https://i.imgur.com/th8izKI.jpeg" },
+            { id: 36, name: "Sticker Sticky ver", image: "https://i.imgur.com/QvQiQY9.jpeg" },
+            { id: 37, name: "Sticker Sticker ver", image: "https://i.imgur.com/AYxR6mR.jpeg" },
+            { id: 38, name: "Sticker Seoul City ver", image: "https://i.imgur.com/wBRXMlF.jpeg" },
+            { id: 39, name: "Sticker Jewel Case ver", image: "https://i.imgur.com/iWk8v3R.jpeg" },
+            { id: 40, name: "Sticker Jewel Case AR ver", image: "https://i.imgur.com/qsmVPm4.jpeg" },
+            { id: 41, name: "Favorite Catharsis ver", image: "https://i.imgur.com/nepNfmi.jpeg" },
+            { id: 42, name: "Favorite Classic ver", image: "https://i.imgur.com/GTazcbj.jpeg" },
+            { id: 43, name: "Favorite KIT TRAGIC ver", image: "https://i.imgur.com/tp23mX3.jpeg" },
+            { id: 44, name: "Favorite KIT POETIC ver", image: "https://i.imgur.com/VdXxWt8.jpeg" },
+            { id: 45, name: "Universe Photobook ver", image: "https://i.imgur.com/jz2bUt1.jpeg" },
+            { id: 46, name: "Universe Jewel ver", image: "https://i.imgur.com/66bGqqw.jpeg" },
+            { id: 47, name: "Universe Jewel UNIVERSE CARD", image: "https://i.imgur.com/diGiDIG.jpeg" },
+            { id: 48, name: "Universe Jewel SPECIAL UNIVERSE CARD", image: "https://i.imgur.com/mqCQF3d.jpeg" },
+            { id: 49, name: "2021 Winter SMTOWN SMCU EXPRESS SMTOWN ver", image: "https://i.imgur.com/ZodEzQ3.jpeg" },
+            { id: 50, name: "2021 Winter SMTOWN SMCU EXPRESS Nighttime Pass ver", image: "https://i.imgur.com/ZQECnU2.jpeg" },
+            { id: 51, name: "2021 Winter SMTOWN SMCU EXPRESS Nighttime Pass card", image: "https://i.imgur.com/rJWQUSe.jpeg" },
+            { id: 52, name: "2Baddies Photobook ver", image: "https://i.imgur.com/09KzRmY.jpeg" },
+            { id: 53, name: "2Baddies Photobook ver2", image: "https://i.imgur.com/dZAc01E.jpeg" },
+            { id: 54, name: "2Baddies Photobook (KR) ver", image: "https://i.imgur.com/9viJyTM.jpeg" },
+            { id: 55, name: "2Baddies Photobook (US) ver", image: "https://i.imgur.com/kH42a2f.jpeg" },
+            { id: 56, name: "2Baddies Photobook (JP) ver", image: "https://i.imgur.com/aC4CuH5.jpeg" },
+            { id: 57, name: "2Baddies Digipack ver", image: "https://i.imgur.com/FZU95MM.jpeg" },
+            { id: 58, name: "2Baddies Digipack (KR) ver", image: "https://i.imgur.com/6ZARwbj.jpeg" },
+            { id: 59, name: "2Baddies Digipack (US) ver", image: "https://i.imgur.com/aTEeITQ.jpeg" },
+            { id: 60, name: "2Baddies Digipack (JP) ver", image: "https://i.imgur.com/uaRW1Rt.jpeg" },
+            { id: 61, name: "2Baddies Target ver", image: "https://i.imgur.com/3TUNI06.jpeg" },
+            { id: 62, name: "2Baddies NEMO", image: "https://i.imgur.com/rhAZmJB.jpeg" },
+            { id: 63, name: "2Baddies NEMO-1", image: "https://i.imgur.com/Yy4Z9Ai.jpeg" },
+            { id: 64, name: "2Baddies SMC", image: "https://i.imgur.com/OvEnFUW.jpeg" },
+            { id: 65, name: "2Baddies SMC-1", image: "https://i.imgur.com/z5sFyo3.jpeg" },
+            { id: 66, name: "2022 SMCU PALACE PALACE VER", image: "https://i.imgur.com/IjL1uM2.jpeg" },
+            { id: 67, name: "2022 SMCU PALACE Portrait VER", image: "https://i.imgur.com/f2vEwAi.jpeg" },
+            { id: 68, name: "2022 SMCU PALACE GUEST NCT127 VER", image: "https://i.imgur.com/WprvAlO.jpeg" },
+            { id: 69, name: "2022 SMCU PALACE membership card ver", image: "https://i.imgur.com/AxslkPu.jpeg" },
+            { id: 70, name: "2022 SMCU PALACE membership card", image: "https://i.imgur.com/WOdvWNB.jpeg" },
+            { id: 71, name: "Ay-Yo A", image: "https://i.imgur.com/odeAMdG.jpeg" },
+            { id: 72, name: "Ay-Yo B", image: "https://i.imgur.com/wUfTJXE.jpeg" },
+            { id: 73, name: "Ay-Yo Digipack", image: "https://i.imgur.com/1ALCNJs.jpeg" },
+            { id: 74, name: "Ay-Yo SMini", image: "https://i.imgur.com/DmvdByy.jpeg" },
+            { id: 75, name: "Perfume A", image: "https://i.imgur.com/8fzAK1Q.jpeg" },
+            { id: 76, name: "Perfume B", image: "https://i.imgur.com/yuJuu9E.jpeg" },
+            { id: 77, name: "Perfume C", image: "https://i.imgur.com/tmyAmc8.jpeg" },
+            { id: 78, name: "Perfume BOX A", image: "https://i.imgur.com/IGIpjo5.jpeg" },
+            { id: 79, name: "Perfume BOX B", image: "https://i.imgur.com/6DDDmpT.jpeg" },
+            { id: 80, name: "Perfume BOX C", image: "https://i.imgur.com/ONbhQ4K.jpeg" },
+            { id: 81, name: "Perfume Digipack A", image: "https://i.imgur.com/ZOxXXne.jpeg" },
+            { id: 82, name: "Perfume Digipack B", image: "https://i.imgur.com/gm0mfnz.jpeg" },
+            { id: 83, name: "Perfume Digipack C", image: "https://i.imgur.com/GbcckSc.jpeg" },
+            { id: 84, name: "Golden Age Archiving ver", image: "https://i.imgur.com/9nWP2LB.jpeg" },
+            { id: 85, name: "Golden Age Archiving ver yearbook card", image: "https://i.imgur.com/8IsMVNW.jpeg" },
+            { id: 86, name: "Golden Age Archiving ver special yearbook card", image: "https://i.imgur.com/DRzzwti.jpeg" },
+            { id: 87, name: "Golden Age Collecting ver", image: "https://i.imgur.com/6sBzMXm.jpeg" },
+            { id: 88, name: "Golden Age Collecting transfer card ver", image: "https://i.imgur.com/Q5sDwnZ.jpeg" },
+            { id: 89, name: "Golden Age Archiving (JP) A ver", image: "https://i.imgur.com/vn5W2h2.jpeg" },
+            { id: 90, name: "Golden Age Archiving (JP) B ver", image: "https://i.imgur.com/tiZ7wVq.jpeg" },
+            { id: 91, name: "Golden Age D2C ver", image: "https://i.imgur.com/Yt6h4If.jpeg" },
+            { id: 92, name: "Golden Age Target ver", image: "https://i.imgur.com/RlBBd5n.jpeg" },
+            { id: 93, name: "FactCheck Chandelier ver", image: "https://i.imgur.com/yd2l6V5.jpeg" },
+            { id: 94, name: "FactCheck Storage ver", image: "https://i.imgur.com/0BCyrds.jpeg" },
+            { id: 95, name: "FactCheck QR Image card", image: "https://i.imgur.com/g8fVU43.jpeg" },
+            { id: 96, name: "FactCheck QR ver", image: "https://i.imgur.com/LuYarRl.jpeg" },
+            { id: 97, name: "FactCheck SMini ver", image: "https://i.imgur.com/yB17MLE.jpeg" },
+            { id: 98, name: "FactCheck Exhibit ver", image: "https://i.imgur.com/DwYVrYi.jpeg" },
+            { id: 99, name: "FactCheck Deluxe Box ver", image: "https://i.imgur.com/URWKavz.jpeg" },
+            { id: 100, name: "FactCheck Exhibit (JP) ver", image: "https://i.imgur.com/eZimmWQ.jpeg" },
+            { id: 101, name: "FactCheck Baenes&Noble _ Amazon ver", image: "https://i.imgur.com/jLoolFb.jpeg" },
+            { id: 102, name: "FactCheck Walmart ver", image: "https://i.imgur.com/17UI6rX.jpeg" },
+            { id: 103, name: "FactCheck D2C ver", image: "https://i.imgur.com/2Y0L2i6.jpeg" },
+            { id: 104, name: "FactCheck Target ver", image: "https://i.imgur.com/r9e5GyR.jpeg" },
+            { id: 105, name: "Be There For Me 127 STEREO A Ver", image: "https://i.imgur.com/unyGtmN.jpeg" },
+            { id: 106, name: "Be There For Me 127 STEREO B Ver", image: "https://i.imgur.com/hiiGnDu.jpeg" },
+            { id: 107, name: "Be There For Me SMini Ver", image: "https://i.imgur.com/TahcOQa.jpeg" },
+            { id: 108, name: "Be There For Me House Ver", image: "https://i.imgur.com/b4euPsR.jpeg" },
+            { id: 109, name: "Be There For Me House (JP) Ver", image: "https://i.imgur.com/QnvRbgq.jpeg" },
+            { id: 110, name: "Be There For Me Walmart Ver", image: "https://i.imgur.com/Fp2mIWn.jpeg" },
+            { id: 111, name: "Be There For Me Target Ver", image: "https://i.imgur.com/unoFTVd.jpeg" },
+            { id: 112, name: "NCT ZONE OST Tin case selfie", image: "https://i.imgur.com/8nbZi2X.jpeg" },
+            { id: 113, name: "NCT ZONE OST Tin case agent", image: "https://i.imgur.com/ndrP9C4.jpeg" },
+            { id: 114, name: "NCT ZONE OST Baseball Player", image: "https://i.imgur.com/MdPoQVz.jpeg" },
+            { id: 115, name: "YOUTH Foam A ver", image: "https://i.imgur.com/6Z6usYO.jpeg" },
+            { id: 116, name: "YOUTH Foam B ver", image: "https://i.imgur.com/R9Mo7rS.jpeg" },
+            { id: 117, name: "YOUTH Foam C ver", image: "https://i.imgur.com/GBnEJh6.jpeg" },
+            { id: 118, name: "YOUTH Early Spring A ver", image: "https://i.imgur.com/LT904tH.jpeg" },
+            { id: 119, name: "YOUTH Early Spring B ver", image: "https://i.imgur.com/VnP5FwJ.jpeg" },
+            { id: 120, name: "YOUTH Early Spring C ver", image: "https://i.imgur.com/wLUhJ65.jpeg" },
+            { id: 121, name: "YOUTH Digipack A ver", image: "https://i.imgur.com/N4bb9Q2.jpeg" },
+            { id: 122, name: "YOUTH Digipack B ver", image: "https://i.imgur.com/GNEhAfc.jpeg" },
+            { id: 123, name: "YOUTH Digipack C ver", image: "https://i.imgur.com/h3tKHOk.jpeg" },
+            { id: 124, name: "WALK Walk ver", image: "https://i.imgur.com/44bfDBk.jpeg" },
+            { id: 125, name: "WALK Podcast ver", image: "https://i.imgur.com/G6gE3uU.jpeg" },
+            { id: 126, name: "WALK Poster ver", image: "https://i.imgur.com/VGy50h8.jpeg" },
+            { id: 127, name: "WALK Poster id card ver", image: "https://i.imgur.com/aVZ2gKM.jpeg" },
+            { id: 128, name: "WALK Walk Crew Character Card ver", image: "https://i.imgur.com/VHz49Gc.jpeg" },
+            { id: 129, name: "WALK Walk Crew Character Card", image: "https://i.imgur.com/zBCy7MO.jpeg" },
+            { id: 130, name: "WALK SMini ver", image: "https://i.imgur.com/H2gogEe.jpeg" },
+            { id: 131, name: "WALK JAPAN EXCLUSIVE ver", image: "https://i.imgur.com/GawNb5z.jpeg" },
+            { id: 132, name: "WALK Target ver", image: "https://i.imgur.com/xzCAIyR.jpeg" },
+            { id: 133, name: "WALK Walmart ver", image: "https://i.imgur.com/AJ9CVi7.jpeg" },
+            { id: 134, name: "WALK SM global shop ver", image: "https://i.imgur.com/6vRg75t.jpeg" },
+            { id: 135, name: "2025 SMTOWN THE CULTURE THE FUTURE THE FUTURE ver", image: "https://i.imgur.com/h4IIDU7.jpeg" },
+            { id: 136, name: "2025 SMTOWN THE CULTURE THE FUTURE FAMILY ver", image: "https://i.imgur.com/SVpEDxE.jpeg" },
+            { id: 137, name: "2025 SMTOWN THE CULTURE THE FUTURE TIME CAPSULE ver", image: "https://i.imgur.com/celJeYK.jpeg" },
+            { id: 138, name: "Soar Crack of Dawn A ver ", image: "https://i.imgur.com/MD8Gpjb.jpeg" },
+            { id: 139, name: "Soar Crack of Dawn B ver ", image: "https://i.imgur.com/kVvMWY3.jpeg" },
+            { id: 140, name: "Soar Crack of Dawn C ver ", image: "https://i.imgur.com/rmy7V8m.jpeg" },
+            { id: 141, name: "Soar Be My Light A ver ", image: "https://i.imgur.com/Mp1ebhm.jpeg" },
+            { id: 142, name: "Soar Be My Light B ver ", image: "https://i.imgur.com/HBFedUy.jpeg" },
+            { id: 143, name: "Soar Be My Light C ver ", image: "https://i.imgur.com/KDvJOL4.jpeg" },
+            { id: 144, name: "Soar Imprinted Memory A ver ", image: "https://i.imgur.com/VzLw6z5.jpeg" },
+            { id: 145, name: "Soar Imprinted Memory B ver ", image: "https://i.imgur.com/W9upTjo.jpeg" },
+            { id: 146, name: "Soar Imprinted Memory C ver ", image: "https://i.imgur.com/eQPU8fJ.jpeg" },
+
           ]
         },
         {
-          category: "benefit",
+          category: "Benefit",
           items: [
-            { name: "REDONANCE pt_1 Yizhiyu", image: "https://i.imgur.com/X3zUxOQ.jpeg" },
-            { name: "REDONANCE pt_2 MUMO", image: "https://i.imgur.com/sL3Mj7j.jpeg" },
-            { name: "REDONANCE pt_2 Yizhiyu", image: "https://i.imgur.com/QHCxHkv.jpeg" },
-            { name: "REDONANCE pt_2 MUMO_2", image: "https://i.imgur.com/1mn9JdP.jpeg" },
-            { name: "Love Holic D JP Fan Club", image: "https://i.imgur.com/C3CWQHy.jpeg" },
-            { name: "Love Holic Tower Records", image: "https://i.imgur.com/RVeuVA8.jpeg" },
-            { name: "Sticker Global Shop Deluxe Box A", image: "https://i.imgur.com/Oj6b4rD.jpeg" },
-            { name: "Sticker Global Shop Deluxe Box B", image: "https://i.imgur.com/mtagVbi.jpeg" },
-            { name: "Sticker MuMo Shop 1st", image: "https://i.imgur.com/vQpWzAs.jpeg" },
-            { name: "Sticker MuMo Shop 2nd", image: "https://i.imgur.com/iOXywd4.jpeg" },
-            { name: "Sticker MuMo Shop 3rd", image: "https://i.imgur.com/L8rr1PE.jpeg" },
-            { name: "Sticker Shopee Thailand", image: "https://i.imgur.com/19gGkRc.jpeg" },
-            { name: "Sticker Owhat General", image: "https://i.imgur.com/bU4Hl8L.jpeg" },
-            { name: "Sticker Owhat ID Limited", image: "https://i.imgur.com/8jrS2kK.jpeg" },
-            { name: "Sticker Yizhiyu 1st", image: "https://i.imgur.com/w6QdSZj.jpeg" },
-            { name: "Sticker Yizhiyu 2nd", image: "https://i.imgur.com/9HZymxL.jpeg" },
-            { name: "Sticker Yizhiyu 3rd", image: "https://i.imgur.com/4bG5bmv.jpeg" },
-            { name: "Sticker Yizhiyu 4th", image: "https://i.imgur.com/etEJm6i.jpeg" },
-            { name: "Favorite Shopee", image: "https://i.imgur.com/4L9DU7a.jpeg" },
-            { name: "Favorite mu-mo SHOP 1st", image: "https://i.imgur.com/sEcyyrR.jpeg" },
-            { name: "Favorite mu-mo SHOP 2nd", image: "https://i.imgur.com/yrAJ9Wp.jpeg" },
-            { name: "Favorite KMS A", image: "https://i.imgur.com/VOYcS0N.jpeg" },
-            { name: "Favorite KMS B", image: "https://i.imgur.com/IRVTSfo.jpeg" },
-            { name: "Favorite KMS 520 Special", image: "https://i.imgur.com/hKiVD1Q.jpeg" },
-            { name: "Favorite Yizhiyu 1st", image: "https://i.imgur.com/YwAoi4C.jpeg" },
-            { name: "Favorite Yizhiyu 2nd", image: "https://i.imgur.com/dkNhLHt.jpeg" },
-            { name: "Favorite Yizhiyu 3rd", image: "https://i.imgur.com/Cq1Q2lR.jpeg" },
-            { name: "Favorite Yizhiyu 4th", image: "https://i.imgur.com/U5G722D.jpeg" },
-            { name: "Favorite Mecima", image: "https://i.imgur.com/AgQfnbK.jpeg" },
-            { name: "Universe SM STORE Lucky Draw A", image: "https://i.imgur.com/j4Laa3X.jpeg" },
-            { name: "Universe SM STORE Lucky Draw B", image: "https://i.imgur.com/bLc6QWr.jpeg" },
-            { name: "Universe mu-mo SHOP", image: "https://i.imgur.com/N4Mt6eK.jpeg" },
-            { name: "Universe Yizhiyu 1st", image: "https://i.imgur.com/7U7YOwM.jpeg" },
-            { name: "Universe Yizhiyu 2nd", image: "https://i.imgur.com/w0t8foL.jpeg" },
-            { name: "Universe Yizhiyu 3rd", image: "https://i.imgur.com/Duwtyrb.jpeg" },
-            { name: "Universe Mecima", image: "https://i.imgur.com/XVaMi0Q.jpeg" },
-            { name: "2Baddies '질주'Street lucky draw A ver", image: "https://i.imgur.com/IRqM7il.jpeg" },
-            { name: "2Baddies '질주'Street lucky draw B ver", image: "https://i.imgur.com/eqfPj83.jpeg" },
-            { name: "2Baddies '질주'Street lucky draw C ver", image: "https://i.imgur.com/wrlMabt.jpeg" },
-            { name: "2Baddies '질주'Street lucky draw Special ver", image: "https://i.imgur.com/wP4VT3E.jpeg" },
-            { name: "2Baddies SM STORE 공개 팬사인회", image: "https://i.imgur.com/o5JNONr.jpeg" },
-            { name: "2Baddies SM STORE 대면_영통 팬사인회", image: "https://i.imgur.com/qdcNEGO.jpeg" },
-            { name: "2Baddies mu-mo SHOP Photobook ver", image: "https://i.imgur.com/JsuUuNF.jpeg" },
-            { name: "2Baddies mu-mo SHOP Digipack ver", image: "https://i.imgur.com/6LgK8bp.jpeg" },
-            { name: "2Baddies Tower Records", image: "https://i.imgur.com/7PIcy3X.jpeg" },
-            { name: "2Baddies SM Global Shop Deluxe Box A", image: "https://i.imgur.com/8ZhnACk.jpeg" },
-            { name: "2Baddies SM Global Shop Deluxe Box B", image: "https://i.imgur.com/6RuVMpy.jpeg" },
-            { name: "Universe mu-mo SHOP", image: "https://i.imgur.com/N4Mt6eK.jpeg" },
-            { name: "Universe Yizhiyu 1st", image: "https://i.imgur.com/7U7YOwM.jpeg" },
-            { name: "Universe Yizhiyu 2nd", image: "https://i.imgur.com/w0t8foL.jpeg" },
-            { name: "Universe Yizhiyu 3rd", image: "https://i.imgur.com/Duwtyrb.jpeg" },
-            { name: "Universe Mecima", image: "https://i.imgur.com/XVaMi0Q.jpeg" },
-            { name: "2Baddies '질주'Street lucky draw A ver", image: "https://i.imgur.com/IRqM7il.jpeg" },
-            { name: "2Baddies '질주'Street lucky draw B ver", image: "https://i.imgur.com/eqfPj83.jpeg" },
-            { name: "2Baddies '질주'Street lucky draw C ver", image: "https://i.imgur.com/wrlMabt.jpeg" },
-            { name: "2Baddies '질주'Street lucky draw Special ver", image: "https://i.imgur.com/wP4VT3E.jpeg" },
-            { name: "2Baddies SM STORE 공개 팬사인회", image: "https://i.imgur.com/o5JNONr.jpeg" },
-            { name: "2Baddies SM STORE 대면_영통 팬사인회", image: "https://i.imgur.com/qdcNEGO.jpeg" },
-            { name: "2Baddies mu-mo SHOP Photobook ver", image: "https://i.imgur.com/JsuUuNF.jpeg" },
-            { name: "2Baddies mu-mo SHOP Digipack ver", image: "https://i.imgur.com/6LgK8bp.jpeg" },
-            { name: "2Baddies Tower Records", image: "https://i.imgur.com/7PIcy3X.jpeg" },
-            { name: "2Baddies SM Global Shop Deluxe Box A", image: "https://i.imgur.com/8ZhnACk.jpeg" },
-            { name: "2Baddies SM Global Shop Deluxe Box B", image: "https://i.imgur.com/6RuVMpy.jpeg" },
-            { name: "2Baddies BDM 팬사인회 부산", image: "https://i.imgur.com/3XlH5oR.jpeg" },
-            { name: "2Baddies Yes24 팬사인회 대구", image: "https://i.imgur.com/aACRL9s.jpeg" },
-            { name: "2Baddies BDM 팬사인회 광주", image: "https://i.imgur.com/Ml9qnYb.jpeg" },
-            { name: "2Baddies HOTTRACKS 팬사인회 대전", image: "https://i.imgur.com/MbnKQA7.jpeg" },
-            { name: "2Baddies SM STORE unboxing", image: "https://i.imgur.com/ucQG7Sd.jpeg" },
-            { name: "2Baddies comeback show Meet and Greet", image: "https://i.imgur.com/qSB5WVI.jpeg" },
-            { name: "2Baddies kpopmerch", image: "https://i.imgur.com/chlhE2e.jpeg" },
-            { name: "2Baddies Sopee Thailand", image: "https://i.imgur.com/7HJHXUj.jpeg" },
-            { name: "2Baddies SM Globalshop Deluxe Box Exclusive_Extra", image: "https://i.imgur.com/kK7s8kZ.jpeg" },
-            { name: "2Baddies Yizhiyu 1st", image: "https://i.imgur.com/klHhq5g.jpeg" },
-            { name: "2Baddies Yizhiyu 2nd", image: "https://i.imgur.com/AMFyfwl.jpeg" },
-            { name: "Ay-Yo SM STORE", image: "https://i.imgur.com/acXHiPr.jpeg" },
-            { name: "Ay-Yo SM STORE 영통 팬사인회", image: "https://i.imgur.com/vQ7dGw7.jpeg" },
-            { name: "Ay-Yo SM STORE Luckydraw", image: "https://i.imgur.com/oH0g7Qm.jpeg" },
-            { name: "Ay-Yo MakeStar", image: "https://i.imgur.com/Za6EAOL.jpeg" },
-            { name: "Ay-Yo Music Plant", image: "https://i.imgur.com/ybjPyIq.jpeg" },
-            { name: "Ay-Yo Music Plant Lucy Draw", image: "https://i.imgur.com/F8XKopf.jpeg" },
-            { name: "Ay-Yo Music Plant 팬 사인회", image: "https://i.imgur.com/hhZbrqC.jpeg" },
-            { name: "Ay-Yo Music Plant 폴라로이드형", image: "https://i.imgur.com/WxywzaD.jpeg" },
-            { name: "Ay-Yo SoundWave", image: "https://i.imgur.com/ZUimho1.jpeg" },
-            { name: "Ay-Yo SoundWave Lucky Draw", image: "https://i.imgur.com/muGwHdU.jpeg" },
-            { name: "Ay-Yo SoundWave 팬 사인회", image: "https://i.imgur.com/Rc7yboa.jpeg" },
-            { name: "Ay-Yo Synnara Record", image: "https://i.imgur.com/hh43dKM.jpeg" },
+            { id: 500, name: "REDONANCE pt_1 Yizhiyu", image: "https://i.imgur.com/X3zUxOQ.jpeg" },
+            { id: 501, name: "REDONANCE pt_2 MUMO", image: "https://i.imgur.com/sL3Mj7j.jpeg" },
+            { id: 502, name: "REDONANCE pt_2 Yizhiyu", image: "https://i.imgur.com/QHCxHkv.jpeg" },
+            { id: 503, name: "REDONANCE pt_2 MUMO_2", image: "https://i.imgur.com/1mn9JdP.jpeg" },
+            { id: 504, name: "Love Holic D JP Fan Club", image: "https://i.imgur.com/C3CWQHy.jpeg" },
+            { id: 505, name: "Love Holic Tower Records", image: "https://i.imgur.com/RVeuVA8.jpeg" },
+            { id: 506, name: "Sticker Global Shop Deluxe Box A", image: "https://i.imgur.com/Oj6b4rD.jpeg" },
+            { id: 507, name: "Sticker Global Shop Deluxe Box B", image: "https://i.imgur.com/mtagVbi.jpeg" },
+            { id: 508, name: "Sticker MuMo Shop 1st", image: "https://i.imgur.com/vQpWzAs.jpeg" },
+            { id: 509, name: "Sticker MuMo Shop 2nd", image: "https://i.imgur.com/iOXywd4.jpeg" },
+            { id: 510, name: "Sticker MuMo Shop 3rd", image: "https://i.imgur.com/L8rr1PE.jpeg" },
+            { id: 511, name: "Sticker Shopee Thailand", image: "https://i.imgur.com/19gGkRc.jpeg" },
+            { id: 512, name: "Sticker Owhat General", image: "https://i.imgur.com/bU4Hl8L.jpeg" },
+            { id: 513, name: "Sticker Owhat ID Limited", image: "https://i.imgur.com/8jrS2kK.jpeg" },
+            { id: 514, name: "Sticker Yizhiyu 1st", image: "https://i.imgur.com/w6QdSZj.jpeg" },
+            { id: 515, name: "Sticker Yizhiyu 2nd", image: "https://i.imgur.com/9HZymxL.jpeg" },
+            { id: 516, name: "Sticker Yizhiyu 3rd", image: "https://i.imgur.com/4bG5bmv.jpeg" },
+            { id: 517, name: "Sticker Yizhiyu 4th", image: "https://i.imgur.com/etEJm6i.jpeg" },
+            { id: 518, name: "Favorite Shopee", image: "https://i.imgur.com/4L9DU7a.jpeg" },
+            { id: 519, name: "Favorite mu-mo SHOP 1st", image: "https://i.imgur.com/sEcyyrR.jpeg" },
+            { id: 520, name: "Favorite mu-mo SHOP 2nd", image: "https://i.imgur.com/yrAJ9Wp.jpeg" },
+            { id: 521, name: "Favorite KMS A", image: "https://i.imgur.com/VOYcS0N.jpeg" },
+            { id: 523, name: "Favorite KMS B", image: "https://i.imgur.com/IRVTSfo.jpeg" },
+            { id: 524, name: "Favorite KMS 520 Special", image: "https://i.imgur.com/hKiVD1Q.jpeg" },
+            { id: 525, name: "Favorite Yizhiyu 1st", image: "https://i.imgur.com/YwAoi4C.jpeg" },
+            { id: 526, name: "Favorite Yizhiyu 2nd", image: "https://i.imgur.com/dkNhLHt.jpeg" },
+            { id: 527, name: "Favorite Yizhiyu 3rd", image: "https://i.imgur.com/Cq1Q2lR.jpeg" },
+            { id: 528, name: "Favorite Yizhiyu 4th", image: "https://i.imgur.com/U5G722D.jpeg" },
+            { id: 529, name: "Favorite Mecima", image: "https://i.imgur.com/AgQfnbK.jpeg" },
+            { id: 530, name: "Universe SM STORE Lucky Draw A", image: "https://i.imgur.com/j4Laa3X.jpeg" },
+            { id: 531, name: "Universe SM STORE Lucky Draw B", image: "https://i.imgur.com/bLc6QWr.jpeg" },
+            { id: 532, name: "Universe mu-mo SHOP", image: "https://i.imgur.com/N4Mt6eK.jpeg" },
+            { id: 533, name: "Universe Yizhiyu 1st", image: "https://i.imgur.com/7U7YOwM.jpeg" },
+            { id: 534, name: "Universe Yizhiyu 2nd", image: "https://i.imgur.com/w0t8foL.jpeg" },
+            { id: 535, name: "Universe Yizhiyu 3rd", image: "https://i.imgur.com/Duwtyrb.jpeg" },
+            { id: 536, name: "Universe Mecima", image: "https://i.imgur.com/XVaMi0Q.jpeg" },
+            { id: 537, name: "2Baddies '질주'Street lucky draw A ver", image: "https://i.imgur.com/IRqM7il.jpeg" },
+            { id: 538, name: "2Baddies '질주'Street lucky draw B ver", image: "https://i.imgur.com/eqfPj83.jpeg" },
+            { id: 539, name: "2Baddies '질주'Street lucky draw C ver", image: "https://i.imgur.com/wrlMabt.jpeg" },
+            { id: 540, name: "2Baddies '질주'Street lucky draw Special ver", image: "https://i.imgur.com/wP4VT3E.jpeg" },
+            { id: 541, name: "2Baddies SM STORE 공개 팬사인회", image: "https://i.imgur.com/o5JNONr.jpeg" },
+            { id: 542, name: "2Baddies SM STORE 대면_영통 팬사인회", image: "https://i.imgur.com/qdcNEGO.jpeg" },
+            { id: 543, name: "2Baddies mu-mo SHOP Photobook ver", image: "https://i.imgur.com/JsuUuNF.jpeg" },
+            { id: 544, name: "2Baddies mu-mo SHOP Digipack ver", image: "https://i.imgur.com/6LgK8bp.jpeg" },
+            { id: 545, name: "2Baddies Tower Records", image: "https://i.imgur.com/7PIcy3X.jpeg" },
+            { id: 546, name: "2Baddies SM Global Shop Deluxe Box A", image: "https://i.imgur.com/8ZhnACk.jpeg" },
+            { id: 547, name: "2Baddies SM Global Shop Deluxe Box B", image: "https://i.imgur.com/6RuVMpy.jpeg" },
+            { id: 548, name: "Universe mu-mo SHOP", image: "https://i.imgur.com/N4Mt6eK.jpeg" },
+            { id: 549, name: "Universe Yizhiyu 1st", image: "https://i.imgur.com/7U7YOwM.jpeg" },
+            { id: 550, name: "Universe Yizhiyu 2nd", image: "https://i.imgur.com/w0t8foL.jpeg" },
+            { id: 551, name: "Universe Yizhiyu 3rd", image: "https://i.imgur.com/Duwtyrb.jpeg" },
+            { id: 552, name: "Universe Mecima", image: "https://i.imgur.com/XVaMi0Q.jpeg" },
+            { id: 553, name: "2Baddies '질주'Street lucky draw A ver", image: "https://i.imgur.com/IRqM7il.jpeg" },
+            { id: 554, name: "2Baddies '질주'Street lucky draw B ver", image: "https://i.imgur.com/eqfPj83.jpeg" },
+            { id: 555, name: "2Baddies '질주'Street lucky draw C ver", image: "https://i.imgur.com/wrlMabt.jpeg" },
+            { id: 556, name: "2Baddies '질주'Street lucky draw Special ver", image: "https://i.imgur.com/wP4VT3E.jpeg" },
+            { id: 557, name: "2Baddies SM STORE 공개 팬사인회", image: "https://i.imgur.com/o5JNONr.jpeg" },
+            { id: 558, name: "2Baddies SM STORE 대면_영통 팬사인회", image: "https://i.imgur.com/qdcNEGO.jpeg" },
+            { id: 559, name: "2Baddies mu-mo SHOP Photobook ver", image: "https://i.imgur.com/JsuUuNF.jpeg" },
+            { id: 560, name: "2Baddies mu-mo SHOP Digipack ver", image: "https://i.imgur.com/6LgK8bp.jpeg" },
+            { id: 561, name: "2Baddies Tower Records", image: "https://i.imgur.com/7PIcy3X.jpeg" },
+            { id: 562, name: "2Baddies SM Global Shop Deluxe Box A", image: "https://i.imgur.com/8ZhnACk.jpeg" },
+            { id: 563, name: "2Baddies SM Global Shop Deluxe Box B", image: "https://i.imgur.com/6RuVMpy.jpeg" },
+            { id: 564, name: "2Baddies BDM 팬사인회 부산", image: "https://i.imgur.com/3XlH5oR.jpeg" },
+            { id: 565, name: "2Baddies Yes24 팬사인회 대구", image: "https://i.imgur.com/aACRL9s.jpeg" },
+            { id: 566, name: "2Baddies BDM 팬사인회 광주", image: "https://i.imgur.com/Ml9qnYb.jpeg" },
+            { id: 567, name: "2Baddies HOTTRACKS 팬사인회 대전", image: "https://i.imgur.com/MbnKQA7.jpeg" },
+            { id: 568, name: "2Baddies SM STORE unboxing", image: "https://i.imgur.com/ucQG7Sd.jpeg" },
+            { id: 569, name: "2Baddies comeback show Meet and Greet", image: "https://i.imgur.com/qSB5WVI.jpeg" },
+            { id: 570, name: "2Baddies kpopmerch", image: "https://i.imgur.com/chlhE2e.jpeg" },
+            { id: 571, name: "2Baddies Sopee Thailand", image: "https://i.imgur.com/7HJHXUj.jpeg" },
+            { id: 572, name: "2Baddies SM Globalshop Deluxe Box Exclusive_Extra", image: "https://i.imgur.com/kK7s8kZ.jpeg" },
+            { id: 573, name: "2Baddies Yizhiyu 1st", image: "https://i.imgur.com/klHhq5g.jpeg" },
+            { id: 574, name: "2Baddies Yizhiyu 2nd", image: "https://i.imgur.com/AMFyfwl.jpeg" },
+            { id: 575, name: "Ay-Yo SM STORE", image: "https://i.imgur.com/acXHiPr.jpeg" },
+            { id: 576, name: "Ay-Yo SM STORE 영통 팬사인회", image: "https://i.imgur.com/vQ7dGw7.jpeg" },
+            { id: 577, name: "Ay-Yo SM STORE Luckydraw", image: "https://i.imgur.com/oH0g7Qm.jpeg" },
+            { id: 578, name: "Ay-Yo MakeStar", image: "https://i.imgur.com/Za6EAOL.jpeg" },
+            { id: 579, name: "Ay-Yo Music Plant", image: "https://i.imgur.com/ybjPyIq.jpeg" },
+            { id: 580, name: "Ay-Yo Music Plant Lucy Draw", image: "https://i.imgur.com/F8XKopf.jpeg" },
+            { id: 581, name: "Ay-Yo Music Plant 팬 사인회", image: "https://i.imgur.com/hhZbrqC.jpeg" },
+            { id: 582, name: "Ay-Yo Music Plant 폴라로이드형", image: "https://i.imgur.com/WxywzaD.jpeg" },
+            { id: 583, name: "Ay-Yo SoundWave", image: "https://i.imgur.com/ZUimho1.jpeg" },
+            { id: 584, name: "Ay-Yo SoundWave Lucky Draw", image: "https://i.imgur.com/muGwHdU.jpeg" },
+            { id: 585, name: "Ay-Yo SoundWave 팬 사인회", image: "https://i.imgur.com/Rc7yboa.jpeg" },
+            { id: 586, name: "Ay-Yo Synnara Record", image: "https://i.imgur.com/hh43dKM.jpeg" },
+            { id: 587, name: "Ay-Yo Apple Music", image: "https://i.imgur.com/jF7yGNH.jpeg" },
+            { id: 588, name: "Ay-Yo Ktown4u", image: "https://i.imgur.com/l1nC4OT.jpeg" },
+            { id: 589, name: "Ay-Yo Hot tracks", image: "https://i.imgur.com/mkWWbbJ.jpeg" },
+            { id: 590, name: "Ay-Yo mu-mo Shop A", image: "https://i.imgur.com/SCugIMr.jpeg" },
+            { id: 591, name: "Ay-Yo mu-mo Shop B", image: "https://i.imgur.com/crigHsF.jpeg" },
+            { id: 592, name: "Ay-Yo Commentary Live Streaming 코멘터리 라이브 스트리밍", image: "https://i.imgur.com/VRaJWnW.jpeg" },
+            { id: 593, name: "Ay-Yo Yizhiyu 1st", image: "https://i.imgur.com/L4r0RrR.jpeg" },
+            { id: 594, name: "Ay-Yo Yizhiyu 2nd", image: "https://i.imgur.com/Rul4uEx.jpeg" },
+            { id: 595, name: "Ay-Yo SM STORE 영통팬사인회 UPDATE", image: "https://i.imgur.com/H3QJyJQ.jpeg" },
+            { id: 596, name: "Perfume SM STORE", image: "https://i.imgur.com/58c7abV.jpeg" },
+            { id: 597, name: "Perfume SM STORE Lucky Draw", image: "https://i.imgur.com/m21Kayp.jpeg" },
+            { id: 598, name: "Perfume SM STORE 팬사인회", image: "https://i.imgur.com/0ADXDvI.jpeg" },
+            { id: 599, name: "Perfume SM STORE unboxing event", image: "https://i.imgur.com/5DAJjPQ.jpeg" },
+            { id: 600, name: "Perfume Makestar", image: "https://i.imgur.com/gSQ1wGL.jpeg" },
+            { id: 601, name: "Perfume MusicPlant", image: "https://i.imgur.com/b36r2Xw.jpeg" },
+            { id: 602, name: "Perfume MusicPlant 영통팬사인회", image: "https://i.imgur.com/HvK5iKy.jpeg" },
+            { id: 603, name: "Perfume SoundWave Lucky Draw", image: "https://i.imgur.com/6q8HUOW.jpeg" },
+            { id: 604, name: "Perfume SoundWave 팬사인회", image: "https://i.imgur.com/gZjUrYE.jpeg" },
+            { id: 605, name: "Perfume Applemusic", image: "https://i.imgur.com/Ge5a681.jpeg" },
+            { id: 606, name: "Perfume Everline Lucky Draw", image: "https://i.imgur.com/MjP4Npl.jpeg" },
+            { id: 607, name: "Perfume Everline 팬사인회", image: "https://i.imgur.com/870g3h2.jpeg" },
+            { id: 608, name: "Perfume Everline 시향회", image: "https://i.imgur.com/jk46iuW.jpeg" },
+            { id: 609, name: "Perfume Withmuu", image: "https://i.imgur.com/ptIQu6Y.jpeg" },
+            { id: 610, name: "Perfume Withmuu Lucky Draw", image: "https://i.imgur.com/ZLoPMUf.jpeg" },
+            { id: 611, name: "Perfume Withmuu 팬사인회", image: "https://i.imgur.com/D3cXwef.jpeg" },
+            { id: 612, name: "Perfume Ktown4u", image: "https://i.imgur.com/2fYs28p.jpeg" },
+            { id: 613, name: "Perfume Hottracks A", image: "https://i.imgur.com/W7PxySQ.jpeg" },
+            { id: 614, name: "Perfume Hottracks B", image: "https://i.imgur.com/DjP8JDN.jpeg" },
+            { id: 615, name: "Perfume Hottracks Launching Show", image: "https://i.imgur.com/2LMx61b.jpeg" },
+            { id: 616, name: "Perfume YES24 Launching Show", image: "https://i.imgur.com/xH3MVcj.jpeg" },
+            { id: 617, name: "Perfume mu-mo Shop A", image: "https://i.imgur.com/Nnmf1Bk.jpeg" },
+            { id: 618, name: "Perfume mu-mo Shop B", image: "https://i.imgur.com/lvAFvLR.jpeg" },
+            { id: 619, name: "Perfume Bandina", image: "https://i.imgur.com/czMjGdM.jpeg" },
+            { id: 620, name: "Perfume Interasia", image: "https://i.imgur.com/lJyKT3q.jpeg" },
+            { id: 621, name: "Perfume Shopee Thailand", image: "https://i.imgur.com/tzSORQE.jpeg" },
+            { id: 622, name: "Perfume KMS Ver_1", image: "https://i.imgur.com/iUn6bCn.jpeg" },
+            { id: 623, name: "Perfume KMS Ver_2", image: "https://i.imgur.com/LOHmvFN.jpeg" },
+            { id: 624, name: "Perfume KMS Ver_3", image: "https://i.imgur.com/qWGQz5Z.jpeg" },
+            { id: 625, name: "Perfume Fansland Ver_1", image: "https://i.imgur.com/xZkzQG1.jpeg" },
+            { id: 626, name: "Perfume Fansland Ver_2", image: "https://i.imgur.com/VaiytDU.jpeg" },
+            { id: 627, name: "Perfume Fansland 폴라로이드 A", image: "https://i.imgur.com/9St7bDC.jpeg" },
+            { id: 628, name: "Perfume Fansland 폴라로이드 B", image: "https://i.imgur.com/7Svmh8i.jpeg" },
+            { id: 629, name: "Perfume Mesima", image: "https://i.imgur.com/OvolA1g.jpeg" },
+            { id: 630, name: "Perfume Yizhiyu", image: "https://i.imgur.com/bUTO8ZQ.jpeg" },
+            { id: 631, name: "Perfume Yizhiyu 2nd", image: "https://i.imgur.com/OEXw9Ak.jpeg" },
+            { id: 632, name: "Golden Age SM STORE", image: "https://i.imgur.com/BH3aCvH.jpeg" },
+            { id: 633, name: "Golden Age Makestar", image: "https://i.imgur.com/rE1ejGo.jpeg" },
+            { id: 634, name: "Golden Age Musickorea", image: "https://i.imgur.com/oymycif.jpeg" },
+            { id: 635, name: "Golden Age Musicplant", image: "https://i.imgur.com/Eoyrtto.jpeg" },
+            { id: 636, name: "Golden Age Musicplant 팬사인회", image: "https://i.imgur.com/KU2uzVu.jpeg" },
+            { id: 637, name: "Golden Age Soundwave", image: "https://i.imgur.com/FXp1qCN.jpeg" },
+            { id: 638, name: "Golden Age Everline", image: "https://i.imgur.com/LKUEVrD.jpeg" },
+            { id: 639, name: "Golden Age Applemusic", image: "https://i.imgur.com/9WWlP3K.jpeg" },
+            { id: 640, name: "Golden Age Withmuu", image: "https://i.imgur.com/HNaEXpY.jpeg" },
+            { id: 641, name: "Golden Age Youngpoong 영풍문고", image: "https://i.imgur.com/11M5C96.jpeg" },
+            { id: 642, name: "Golden Age Hottracks", image: "https://i.imgur.com/TOXrQ5C.jpeg" },
+            { id: 643, name: "Golden Age Interasia", image: "https://i.imgur.com/VqdbU7k.jpeg" },
+            { id: 645, name: "Golden Age Interasia (재발매)ver", image: "https://i.imgur.com/A4gW5AD.jpeg" },
+            { id: 646, name: "Golden Age KPOPMERCH", image: "https://i.imgur.com/IwRqR9W.jpeg" },
+            { id: 647, name: "Golden Age Ktown4u", image: "https://i.imgur.com/zXPHR0i.jpeg" },
+            { id: 648, name: "Golden Age MMT 마뮤테", image: "https://i.imgur.com/ODic6rA.jpeg" },
+            { id: 649, name: "Golden Age mu-mo SHOP", image: "https://i.imgur.com/hjUcp6B.jpeg" },
+            { id: 650, name: "Golden Age SHIBUYA 109", image: "https://i.imgur.com/RJIHyy6.jpeg" },
+            { id: 651, name: "Golden Age StarRiver A", image: "https://i.imgur.com/MvgaytX.jpeg" },
+            { id: 652, name: "Golden Age StarRiver B", image: "https://i.imgur.com/zkkjhN9.jpeg" },
+            { id: 653, name: "Golden Age Yizhiyu 1st", image: "https://i.imgur.com/8m5TNXk.jpeg" },
+            { id: 654, name: "Golden Age Yizhiyu 2nd", image: "https://i.imgur.com/BaEjPR7.jpeg" },
+            { id: 655, name: "Golden Age Yizhiyu 영통 팬사인회", image: "https://i.imgur.com/NZ80jtO.jpeg" },
+            { id: 656, name: "Golden Age KMS", image: "https://i.imgur.com/LLUJAjZ.jpeg" },
+            { id: 657, name: "Fact Check Youngpoong 영풍문고", image: "https://i.imgur.com/mSgxtzQ.jpeg" },
+            { id: 658, name: "Fact Check Hottracks", image: "https://i.imgur.com/4VnjchU.jpeg" },
+            { id: 659, name: "Fact Check 팝업앨범 구매 한정", image: "https://i.imgur.com/nBYMkkY.jpeg" },
+            { id: 660, name: "Fact Check Showcase Entry 응모", image: "https://i.imgur.com/rS1bdh9.jpeg" },
+            { id: 661, name: "Fact Check Weverse live", image: "https://i.imgur.com/QA1EluZ.jpeg" },
+            { id: 662, name: "Fact Check SM STORE", image: "https://i.imgur.com/YNzWsMk.jpeg" },
+            { id: 663, name: "Fact Check SM STORE 팬사인회", image: "https://i.imgur.com/3PaFcP5.jpeg" },
+            { id: 664, name: "Fact Check Makestar", image: "https://i.imgur.com/nFi8LyQ.jpeg" },
+            { id: 665, name: "Fact Check Makestar Lucky Draw", image: "https://i.imgur.com/N3rO8b3.jpeg" },
+            { id: 666, name: "Fact Check Makestar 영통 팬사인회", image: "https://i.imgur.com/eacmobO.jpeg" },
+            { id: 667, name: "Fact Check AppleMusic", image: "https://i.imgur.com/cS1V6cN.jpeg" },
+            { id: 668, name: "Fact Check AppleMusic Lucky Draw", image: "https://i.imgur.com/hsDcWDA.jpeg" },
+            { id: 669, name: "Fact Check Everline", image: "https://i.imgur.com/fJiYifv.jpeg" },
+            { id: 670, name: "Fact Check Everline Lucky Draw", image: "https://i.imgur.com/eyKYq52.jpeg" },
+            { id: 671, name: "Fact Check Ktown4u", image: "https://i.imgur.com/1GXPUgC.jpeg" },
+            { id: 672, name: "Fact Check Ktown4u Lucky Draw", image: "https://i.imgur.com/yT2cw6a.jpeg" },
+            { id: 673, name: "Fact Check Ktown4u 팬사인회", image: "https://i.imgur.com/2KJPrjI.jpeg" },
+            { id: 674, name: "Fact Check Ktown4u 영통 팬사인회", image: "https://i.imgur.com/pFf1V3o.jpeg" },
+            { id: 675, name: "Fact Check Interasia", image: "https://i.imgur.com/Vvx3o6F.jpeg" },
+            { id: 676, name: "Fact Check SHIBUYA 109", image: "https://i.imgur.com/T0Zfeuf.jpeg" },
+            { id: 677, name: "Fact Check mu-mo SHOP", image: "https://i.imgur.com/3G7E96i.jpeg" },
+            { id: 678, name: "Fact Check Shopee 팬사인회", image: "https://i.imgur.com/OgrGWXv.jpeg" },
+            { id: 679, name: "Fact Check Shopee meet and greet", image: "https://i.imgur.com/NctCZtA.jpeg" },
+            { id: 680, name: "Fact Check Japan Dome Tour Exclusive", image: "https://i.imgur.com/2UtyMVL.jpeg" },
+            { id: 681, name: "Fact Check KMS 1", image: "https://i.imgur.com/W4ozNCb.jpeg" },
+            { id: 682, name: "Fact Check KMS 2", image: "https://i.imgur.com/ktFjrXr.jpeg" },
+            { id: 683, name: "Fact Check KMS 3", image: "https://i.imgur.com/zeDorPH.jpeg" },
+            { id: 684, name: "Fact Check KMS 4", image: "https://i.imgur.com/YPJxAaA.jpeg" },
+            { id: 685, name: "Be There For Me SM STORE Lucky draw", image: "https://i.imgur.com/nVZJ7Ek.jpeg" },
+            { id: 686, name: "Be There For Me NCT ZONE POP-UP", image: "https://i.imgur.com/GqUknif.jpeg" },
+            { id: 687, name: "Be There For Me COUNTDOWN LIVE (Weverse)", image: "https://i.imgur.com/SjAcvsU.jpeg" },
+            { id: 688, name: "Be There For Me Makestar", image: "https://i.imgur.com/aaMcoUF.jpeg" },
+            { id: 689, name: "Be There For Me Makestar Lucky Draw", image: "https://i.imgur.com/yE5vSls.jpeg" },
+            { id: 690, name: "Be There For Me Everline", image: "https://i.imgur.com/bJgjW1Z.jpeg" },
+            { id: 691, name: "Be There For Me Everline 팬사인회", image: "https://i.imgur.com/u459OIP.jpeg" },
+            { id: 692, name: "Be There For Me Everline Lucky Draw", image: "https://i.imgur.com/i2Aojek.jpeg" },
+            { id: 693, name: "Be There For Me Applemusic", image: "https://i.imgur.com/RN1NXG1.jpeg" },
+            { id: 694, name: "Be There For Me Youngpoong 영풍문고", image: "https://i.imgur.com/CQKEWMr.jpeg" },
+            { id: 695, name: "Be There For Me Hottracks", image: "https://i.imgur.com/50SV43s.jpeg" },
+            { id: 696, name: "Be There For Me Kakao Talk 카카오톡 선물하기", image: "https://i.imgur.com/b3HSZlJ.jpeg" },
+            { id: 697, name: "Be There For Me YES24", image: "https://i.imgur.com/sofCVl1.jpeg" },
+            { id: 698, name: "Be There For Me mu-mo SHOP", image: "https://i.imgur.com/5FZiFtu.jpeg" },
+            { id: 699, name: "Be There For Me APPLEWOOD 자카르타 팬사인회", image: "https://i.imgur.com/yDw2Zel.jpeg" },
+            { id: 700, name: "Be There For Me APPLEWOOD 마닐라 팬사인회", image: "https://i.imgur.com/sNPveSr.jpeg" },
           ]
         },
         {
           category: "Album Goods",
           items: [
-            { name: "Cherry Bomb Sticker pack", image: "https://i.imgur.com/q1Om17Z.jpeg" },
+            { id: 1500, name: "Album Goods 1", image: "https://i.imgur.com/vfKz4r7.jpeg" }
           ]
         },
         {
           category: "Goods",
           items: [
-            { name: "수능(CSAT) Cheering", image: "https://i.imgur.com/pQM5eti.jpeg" },
+            { id: 2500, name: "Goods 1", image: "https://i.imgur.com/0nqXe6g.jpeg" }
           ]
         },
         {
           category: "Performance",
           items: [
-            { name: "SM ROOKIES SHOW (Matte)", image: "https://i.imgur.com/dTP9abN.jpeg" },
-            { name: "SM ROOKIES SHOW (Glossy)", image: "https://i.imgur.com/dTP9abN.jpeg" },
+            { id: 3500, name: "Performance 1", image: "https://i.imgur.com/0QhDym3.jpeg" }
           ]
         },
         {
           category: "Exhibition",
           items: [
-            { name: "Welcome to my city LUGGAGE STICKER", image: "https://i.imgur.com/dmtPB8J.jpeg" },
+            { id: 4500, name: "Exhibition 1", image: "https://i.imgur.com/3Q9vRJb.jpeg" }
           ]
         },
         {
           category: "Season's Greetings",
           items: [
-            { name: "2017 SEASON'S GREETINGS", image: "https://i.imgur.com/IrR6Tj4.jpeg" },
+            { id: 5500, name: "Season's Greetings 1", image: "https://i.imgur.com/XWdxlWx.jpeg" }
           ]
         },
         {
           category: "Etc",
           items: [
-            { name: "Star Avenue", image: "https://i.imgur.com/l2IdDfm.jpeg" },
+            { id: 6500, name: "Etc 1", image: "https://i.imgur.com/t6N3F8u.jpeg" }
           ]
         }
       ];
 
-      function App() {
-        const [searchTerm, setSearchTerm] = React.useState("");
-        const [selectedItems, setSelectedItems] = React.useState(new Set());
-        const [selectedCategory, setSelectedCategory] = React.useState("All");
-        const [copySuccess, setCopySuccess] = React.useState(false);
+      // 모든 아이템을 평탄화하여 category 포함
+      const allItems = photocardData.flatMap(group =>
+        group.items.map(item => ({
+          ...item,
+          category: group.category
+        }))
+      );
 
-        // Flatten all items for filtering/searching
-        const allItems = photocardData.flatMap(group =>
-          group.items.map(item => ({
-            ...item,
-            category: group.category,
-          }))
-        );
+      let selectedCategory = "All";
+      let searchTerm = "";
+      let selectedIds = new Set();
 
-        const categories = ["All", ...photocardData.map(group => group.category)];
+      const categoryButtons = document.getElementById("categoryButtons");
+      const searchInput = document.getElementById("searchInput");
+      const photocardGrid = document.getElementById("photocardGrid");
 
-        // Filter items by category and search term
+      const selectAllBtn = document.getElementById("selectAllBtn");
+      const deselectAllBtn = document.getElementById("deselectAllBtn");
+      const copySelectedBtn = document.getElementById("copySelectedBtn");
+
+      function renderButtons() {
+        categoryButtons.innerHTML = "";
+        categories.forEach(category => {
+          const button = document.createElement("button");
+          button.textContent = category;
+          button.className =
+            "px-4 py-2 rounded-full border " +
+            (selectedCategory === category
+              ? "bg-[#6a95b7] text-white"
+              : "bg-white text-[#6a95b7] border-[#6a95b7]");
+          button.onclick = () => {
+            selectedCategory = category;
+            renderGrid();
+            renderButtons();
+          };
+          categoryButtons.appendChild(button);
+        });
+      }
+
+      function renderGrid() {
         const filteredItems = allItems.filter(item => {
           const matchCategory = selectedCategory === "All" || item.category === selectedCategory;
           const matchSearch = item.name.toLowerCase().includes(searchTerm.toLowerCase());
           return matchCategory && matchSearch;
         });
 
-        // Toggle selection by name (Set for easy add/remove)
-        function toggleSelect(name) {
-          setSelectedItems(prev => {
-            const newSet = new Set(prev);
-            if (newSet.has(name)) {
-              newSet.delete(name);
+        photocardGrid.innerHTML = "";
+        filteredItems.forEach(item => {
+          const isSelected = selectedIds.has(item.id);
+          const card = document.createElement("div");
+          card.className =
+            "bg-white p-2 rounded shadow cursor-pointer border-4 " +
+            (isSelected ? "border-[#6a95b7]" : "border-transparent");
+          card.innerHTML = `
+            <img src="${item.image}" alt="${item.name}" class="w-full h-auto rounded" />
+            <p class="mt-2 text-sm text-center">${item.name}</p>
+          `;
+          card.onclick = () => {
+            if (selectedIds.has(item.id)) {
+              selectedIds.delete(item.id);
             } else {
-              newSet.add(name);
+              selectedIds.add(item.id);
             }
-            return newSet;
-          });
-        }
-
-        // Select all filtered items
-        function selectAll() {
-          setSelectedItems(prev => {
-            const newSet = new Set(prev);
-            filteredItems.forEach(item => newSet.add(item.name));
-            return newSet;
-          });
-        }
-
-        // Deselect all filtered items
-        function deselectAll() {
-          setSelectedItems(prev => {
-            const newSet = new Set(prev);
-            filteredItems.forEach(item => newSet.delete(item.name));
-            return newSet;
-          });
-        }
-
-        // Copy selected items as markdown
-        function copySelected() {
-          if (selectedItems.size === 0) {
-            alert("Please select at least one photocard.");
-            return;
-          }
-          const selectedArray = allItems.filter(item => selectedItems.has(item.name));
-          const mdList = selectedArray
-            .map(item => `- ${item.name}\n  ![${item.name}](${item.image})`)
-            .join("\n\n");
-
-          navigator.clipboard.writeText(mdList).then(() => {
-            setCopySuccess(true);
-            setTimeout(() => setCopySuccess(false), 2000);
-          });
-        }
-
-        return (
-          <div>
-            <h1 className="text-4xl font-bold mb-6" style={{ color: "#6a95b7" }}>
-              NCT Doyoung Photocard List
-            </h1>
-
-
-            <div className="flex flex-wrap gap-2 mb-4">
-              {categories.map(cat => (
-                <button
-                  key={cat}
-                  className={`px-4 py-2 rounded border ${
-                    selectedCategory === cat
-                      ? "bg-blue-600 text-white border-blue-600"
-                      : "bg-white text-gray-700 border-gray-300"
-                  }`}
-                  onClick={() => setSelectedCategory(cat)}
-                >
-                  {cat}
-                </button>
-              ))}
-            </div>
-
-            <div className="mb-4 flex gap-3 flex-wrap items-center">
-              <input
-                type="text"
-                placeholder="Search photocard..."
-                className="border border-gray-300 rounded px-3 py-2 flex-grow min-w-[200px]"
-                value={searchTerm}
-                onChange={e => setSearchTerm(e.target.value)}
-              />
-
-             <button
-               className="px-4 py-2 rounded text-white"
-               style={{ backgroundColor: "#5584AC" }}
-             >
-               Select All
-             </button>
-
-             <button
-              className="px-4 py-2 rounded text-white"
-              style={{ backgroundColor: "#8db9ce" }}
-             >
-              Deselect All
-             </button>
-
-             <button
-               className="px-4 py-2 rounded text-white"
-               style={{ backgroundColor: "#3c6e91" }}
-             >
-               Copy Selected
-             </button>
-
-            </div>
-
-            <div className="mb-4 font-semibold text-gray-700">
-              Total Cards: {filteredItems.length} | Selected: {selectedItems.size}
-            </div>
-
-            {copySuccess && (
-              <div className="mb-4 text-green-700 font-semibold">
-                Copy successful! Paste the markdown anywhere.
-              </div>
-            )}
-
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
-              {filteredItems.map(item => (
-                <div
-                  key={item.name}
-                  className={`cursor-pointer border border-gray-300 rounded p-2 flex flex-col items-center hover:shadow ${
-                    selectedItems.has(item.name) ? "selected" : ""
-                  }`}
-                  onClick={() => toggleSelect(item.name)}
-                  title={item.name}
-                >
-                  <img src={item.image} alt={item.name} className="rounded" />
-                  <div className="mt-2 text-center text-sm">{item.name}</div>
-                </div>
-              ))}
-            </div>
-          </div>
-        );
+            renderGrid();
+          };
+          photocardGrid.appendChild(card);
+        });
       }
 
-      const root = ReactDOM.createRoot(document.getElementById("root"));
-      root.render(<App />);
+      searchInput.addEventListener("input", (e) => {
+        searchTerm = e.target.value;
+        renderGrid();
+      });
+
+      selectAllBtn.addEventListener("click", () => {
+        const filteredItems = allItems.filter(item => {
+          const matchCategory = selectedCategory === "All" || item.category === selectedCategory;
+          const matchSearch = item.name.toLowerCase().includes(searchTerm.toLowerCase());
+          return matchCategory && matchSearch;
+        });
+        filteredItems.forEach(item => selectedIds.add(item.id));
+        renderGrid();
+      });
+
+      deselectAllBtn.addEventListener("click", () => {
+        selectedIds.clear();
+        renderGrid();
+      });
+
+      copySelectedBtn.addEventListener("click", () => {
+        const selectedItems = allItems.filter(item => selectedIds.has(item.id));
+        if (selectedItems.length === 0) {
+          alert("No items selected.");
+          return;
+        }
+        const imageUrls = selectedItems.map(item => item.image).join("\n");
+        navigator.clipboard.writeText(imageUrls).then(() => {
+          alert("Selected image URLs copied to clipboard!");
+        });
+      });
+
+      renderButtons();
+      renderGrid();
     </script>
   </body>
 </html>
