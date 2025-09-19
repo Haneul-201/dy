@@ -1571,7 +1571,7 @@
 
       let selectedCategory = "All";
       let searchTerm = "";
-      let selectedIds = new Set();
+      let selectedIds = loadSelectedCards();
 
       const categoryButtons = document.getElementById("categoryButtons");
       const searchInput = document.getElementById("searchInput");
@@ -1667,6 +1667,7 @@
     </script>
   </body>
 </html>
+
 
 
 
