@@ -1684,6 +1684,9 @@
             } else {
               selectedIds.add(item.id);
             }
+            
+            localStorage.setItem("selectedIds", JSON.stringify([...selectedIds]));
+
             renderGrid();
           };
           photocardGrid.appendChild(card);
