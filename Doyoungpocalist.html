@@ -21,7 +21,8 @@
           class="p-2 border border-gray-300 rounded grow min-w-[200px]"
         />
         <button id="selectAllBtn" class="px-3 py-2 bg-[#6a95b7] text-white rounded">Select All</button>
-        <button id="deselectAllBtn" class="px-3 py-2 bg-[#6a95b7] text-white rounded">Deselect All</button>  
+        <button id="deselectAllBtn" class="px-3 py-2 bg-[#6a95b7] text-white rounded">Deselect All</button>
+        <button id="copySelectedBtn" class="px-3 py-2 bg-[#6a95b7] text-white rounded">Copy Selected</button>
       </div>
 
       <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4" id="photocardGrid"></div>
@@ -1638,6 +1639,7 @@
 
       const selectAllBtn = document.getElementById("selectAllBtn");
       const deselectAllBtn = document.getElementById("deselectAllBtn");
+      const copySelectedBtn = document.getElementById("copySelectedBtn");
 
       function renderButtons() {
         categoryButtons.innerHTML = "";
@@ -1710,7 +1712,13 @@
         selectedIds.clear();
         renderGrid();
       });
-      
+
+      copySelectedBtn.addEventListener("click", () => {
+        const selectedItems = allItems.filter(item => selectedIds.has(item.id));
+        if (selectedItems.length === 0) {
+          alert("No items selected.");
+          return;
+        }
         const imageUrls = selectedItems.map(item => item.image).join("\n");
         navigator.clipboard.writeText(imageUrls).then(() => {
           alert("Selected image URLs copied to clipboard!");
@@ -1722,7 +1730,6 @@
     </script>
   </body>
 </html>
-
 
 
 
