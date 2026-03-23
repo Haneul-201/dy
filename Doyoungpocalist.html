@@ -1629,7 +1629,9 @@
 
       let selectedCategory = "All";
       let searchTerm = "";
-      let selectedIds = new Set();
+      let selectedIds = new Set(
+        JSON.parse(localStorage.getItem("selectedIds")) || []
+      );
 
       const categoryButtons = document.getElementById("categoryButtons");
       const searchInput = document.getElementById("searchInput");
