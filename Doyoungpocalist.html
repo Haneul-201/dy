@@ -1710,13 +1710,7 @@
         selectedIds.clear();
         renderGrid();
       });
-
-      copySelectedBtn.addEventListener("click", () => {
-        const selectedItems = allItems.filter(item => selectedIds.has(item.id));
-        if (selectedItems.length === 0) {
-          alert("No items selected.");
-          return;
-        }
+      
         const imageUrls = selectedItems.map(item => item.image).join("\n");
         navigator.clipboard.writeText(imageUrls).then(() => {
           alert("Selected image URLs copied to clipboard!");
