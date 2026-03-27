@@ -14,6 +14,7 @@
 
       <!-- 검색창 + 버튼 -->
       <div class="flex flex-wrap gap-2 mb-4 items-center">
+  <div id="selectedCount" class="text-sm text-gray-700 ml-2">선택된 카드: 0개</div>
         <input
           type="text"
           id="searchInput"
@@ -1658,7 +1659,14 @@
           button.onclick = () => {
             selectedCategory = category;
             renderGrid();
-            renderButtons();
+  updateSelectedCount();
+            
+function updateSelectedCount() {
+  document.getElementById("selectedCount").textContent =
+    `선택된 카드: ${selectedIds.size}개`;
+}
+
+renderButtons();
           };
           categoryButtons.appendChild(button);
         });
@@ -1692,6 +1700,7 @@
             localStorage.setItem("selectedIds", JSON.stringify([...selectedIds]));
 
             renderGrid();
+  updateSelectedCount();
           };
           photocardGrid.appendChild(card);
         });
@@ -1700,6 +1709,7 @@
       searchInput.addEventListener("input", (e) => {
         searchTerm = e.target.value;
         renderGrid();
+  updateSelectedCount();
       });
 
       selectAllBtn.addEventListener("click", () => {
@@ -1710,11 +1720,13 @@
         });
         filteredItems.forEach(item => selectedIds.add(item.id));
         renderGrid();
+  updateSelectedCount();
       });
 
       deselectAllBtn.addEventListener("click", () => {
         selectedIds.clear();
         renderGrid();
+  updateSelectedCount();
       });
 
       copySelectedBtn.addEventListener("click", () => {
@@ -1729,8 +1741,18 @@
         });
       });
 
-      renderButtons();
+      
+function updateSelectedCount() {
+  document.getElementById("selectedCount").textContent =
+    `선택된 카드: ${selectedIds.size}개`;
+}
+
+renderButtons();
       renderGrid();
+  updateSelectedCount();
     </script>
+  </body>
+</html>
+</script>
   </body>
 </html>
