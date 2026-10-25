@@ -1706,14 +1706,19 @@ renderButtons();
         photocardGrid.innerHTML = "";
         filteredItems.forEach(item => {
           const isSelected = selectedIds.has(item.id);
-          const card = document.createElement("div");
-          card.className =
-            "bg-white p-2 rounded shadow cursor-pointer border-4 " +
-            (isSelected ? "border-[#6a95b7]" : "border-transparent");
-          card.innerHTML = `
-            <img src="${item.image}" alt="${item.name}" class="w-full h-auto rounded" />
-            <p class="mt-2 text-sm text-center">${item.name}</p>
-          `;
+const card = document.createElement("div");
+
+card.className =
+  "bg-white p-2 rounded shadow cursor-pointer";
+
+card.innerHTML = `
+  <img
+    src="${item.image}"
+    alt="${item.name}"
+    class="w-full h-auto rounded ${isSelected ? 'grayscale opacity-50' : ''}"
+  />
+  <p class="mt-2 text-sm text-center">${item.name}</p>
+`;
           card.onclick = () => {
             if (selectedIds.has(item.id)) {
               selectedIds.delete(item.id);
